@@ -1,0 +1,13 @@
+version: "3"
+services:
+  node-dev:
+    container_name: node-dev
+    image: dev:node
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+    volumes:
+      - /mnt/C/Users/25074/.ssh:/home/node/.ssh:rw
+      - /mnt/d/Git/code/nodejs/fchack:/work
+    tty: true
+    user: node
