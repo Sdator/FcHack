@@ -1,0 +1,29 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
+// https://github.com/microsoft/vscode-dev-containers/tree/v0.187.0/containers/javascript-node
+{
+  "name": "Node.js",
+  // 配置文件
+  "dockerComposeFile": "docker-compose.yml",
+  // 连接到的服务
+  "service": "node-dev",
+  "shutdownAction": "stopCompose",
+
+  "settings": {},
+  "workspaceFolder": "/work",
+
+  // 扩展
+  "extensions": [
+    "coenraads.bracket-pair-colorizer-2",
+    "octref.vetur",
+    "dbaeumer.vscode-eslint"
+  ],
+
+  // Use 'forwardPorts' to make a list of ports inside the container available locally.
+  // "forwardPorts": [],
+
+  // 容器创建后运行命令
+  "postCreateCommand": "yarn",
+
+  // Comment out connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
+  // "remoteUser": "node"
+}
