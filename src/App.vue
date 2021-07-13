@@ -1,21 +1,23 @@
 <template>
-  <!-- <HelloWorld msg="Hello Vue 3 + Vite" /> -->
-  <Shuru></Shuru>
+  <div class="shuru">
+    <files />
+    <Shuru></Shuru>
+  </div>
 </template>
 
+
 <script setup>
-import HelloWorld from "./components/HelloWorld.vue";
+// import HelloWorld from "./libs/AUI/components/HelloWorld.vue";
 // This starter template is using Vue 3 experimental <script setup> SFCs
 // Check out https://github.com/vuejs/rfcs/blob/master/active-rfcs/0040-script-setup.md
 </script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+
+
+<style lang="scss" scoped>
+.shuru {
+  width: 700px;
+  height: 200px;
+  margin: 50px auto;
 }
-</style>
+</style>>
