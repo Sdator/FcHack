@@ -1,6 +1,6 @@
 <template>
   <button class="add" @click="add">添加</button>
-  <div class="inputs" v-for="(v, k) of arr" :key="k">
+  <div class="inputs" v-for="(v, k) of data" :key="k" ref="fileblob">
     属性：<input type="text" v-model="v.属性" />
 
     长度：<input type="number" v-model.number="v.长度" />
@@ -14,54 +14,47 @@
 
 <script>
 // 组件模式无法在组件内推导 name 需要另外创建一个 script 标签导出 name
+// 导出名字一定要对上 不然是无法使用组件
 export default { name: "Shuru" };
 </script>
 
+
 <script setup>
-import { defineProps, reactive, ref } from "vue";
-import { 属性 } from "../../../../assets/数据.js";
+import { defineProps, reactive, ref, watch } from "vue";
+import { FCDate } from "../../../api.js";
 
-const 取随机数 = (max) => Math.floor(Math.random() * max);
+// 创建数据库 代入初始列表
+// const db = new FCDate();
+// const arr = ref(db.list);
 
-// 条目基础属性
-const obj = {
-  属性: "力量",
-  长度: 1,
-  地址: "0x10",
-  数值: 500,
-};
-// 绑定的数组
-const arr = reactive([obj]);
-let 计数器 = 0;
+// 暴露属性
+const props = defineProps({
+  data: Array,
+  db: Object,
+});
 
-const add = (v) => {
-  const dan = Object.assign({}, obj);
-  dan.属性 = 属性[取随机数(属性.length)];
-
-  dan.数值 = 取随机数(500);
-  dan.地址 = "0x" + 取随机数(100000).toString(16).toUpperCase();
-
-  // 使用最后一次设置的长度
-  dan.长度 = arr[计数器].长度;
-
-  console.log(arr, dan);
-  arr.push(dan);
-  计数器 += 1;
-
-  // console.log(JSON.stringify(arr));
+// ===================
+// 事件
+// ====
+// 新增两个代理事件 来手动触发对象函数
+// 通过 Object.assign 返回一个新对象实现更新 vue代理属性 否则vue无法捕获到更新信息
+const add = () => {
+  props.db.add();
+  // arr.value = Object.assign({}, db.list);
 };
 
-const del = (a, v) => {
-  计数器 -= 1;
-  // arr.pop(this);
-  arr.splice(v, 1);
-  console.log(a, v, 计数器);
-};
-
-// 导出名字一定要对上 不然是无法使用组件
+// const del = (v, k) => {
+//   console.log(v);
+//   db.del(k);
+//   // arr.value = Object.assign({}, db.list);
+// };
 </script>
 
 <style lang="scss" scoped>
+* {
+  margin: 10px;
+}
+
 .add {
   width: 600px;
   height: 100px;
@@ -73,9 +66,6 @@ const del = (a, v) => {
   }
   label {
     width: 150px;
-  }
-  * {
-    margin: 10px;
   }
 }
 </style>
