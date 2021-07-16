@@ -1,4 +1,4 @@
-const 属性 = `
+const 属性类目 = `
 力量
 敏捷
 智力
@@ -12,4 +12,4 @@ const 属性 = `
   .trim()
   .split("\n");
 
-export { 属性 };
+export { 属性类目 };
