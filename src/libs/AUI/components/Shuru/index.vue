@@ -1,71 +1,93 @@
 <template>
-  <button class="add" @click="add">添加</button>
-  <div class="inputs" v-for="(v, k) of data" :key="k" ref="fileblob">
-    属性：<input type="text" v-model="v.属性" />
-
-    长度：<input type="number" v-model.number="v.长度" />
-
-    地址：<input type="text" v-model="v.地址" />
-
-    数值：<label for="">{{ v.数值 }}</label>
-    <button @click="del(v, k)">❌</button>
+  <!-- 外层创建一个总框架 方便操控整体样式 -->
+  <div class="shuru">
+    <!--
+      @blob 文件讀取完畢往外發送事件 顺带返回二进制
+    -->
+    <InFiles @blob="envblob" />
+    <br />
+    <button class="add" @click="db.add()">添加</button>
+    <!--
+      data  绑定对象条目
+      @del  自定义事件 子组件被点击往外面传递
+     -->
+    <Tiaomu
+      :blob="blob"
+      v-for="(v, k) of data"
+      :key="k"
+      :data="v"
+      @e-Del="db.del(k)"
+    />
   </div>
 </template>
 
 <script>
-// 组件模式无法在组件内推导 name 需要另外创建一个 script 标签导出 name
-// 导出名字一定要对上 不然是无法使用组件
-export default { name: "Shuru" };
-</script>
+// 导入组件内部使用 不全局注册
+import Tiaomu from "./tiaomu.vue";
+import InFiles from "./inFiles.vue";
 
+export default {
+  // 逐渐名称
+  name: "Shuru",
+  // 注册组件
+  components: {
+    Tiaomu,
+    InFiles,
+  },
+};
+</script>
 
 <script setup>
-import { defineProps, reactive, ref, watch } from "vue";
-import { FCDate } from "../../../api.js";
+import {
+  defineProps,
+  computed,
+  ref,
+  watch,
+  reactive,
+  toRef,
+  toRefs,
+} from "vue";
+import { FCDate, 取随机数 } from "../../../api";
 
-// 创建数据库 代入初始列表
-// const db = new FCDate();
-// const arr = ref(db.list);
+// 新建实例 并绑定实例数据   ! 静态属性无法更新
+const db = ref(new FCDate());
+const data = ref(db.value.data);
 
-// 暴露属性
-const props = defineProps({
-  data: Array,
-  db: Object,
+watch(data.value, (n, o) => {
+  // console.log(n, o, "监听");
 });
 
-// ===================
-// 事件
-// ====
-// 新增两个代理事件 来手动触发对象函数
-// 通过 Object.assign 返回一个新对象实现更新 vue代理属性 否则vue无法捕获到更新信息
-const add = () => {
-  props.db.add();
-  // arr.value = Object.assign({}, db.list);
-};
+// 子组件往外发送的自定义事件
+// 得到拖放窗返回的二进制数据
 
-// const del = (v, k) => {
-//   console.log(v);
-//   db.del(k);
-//   // arr.value = Object.assign({}, db.list);
-// };
+const blob = ref();
+function envblob(v) {
+  blob.value = v;
+  // console.log(blob, blob.value, 666);
+
+  // 由于事件传入的变量是 ref 对象可以直接监听
+  // watch(v, (n, o) => {
+  //   blob.value = v;
+  //   console.log("监听blob");
+  //   // console.log(n, o, "监听blob");
+  // });
+}
 </script>
 
-<style lang="scss" scoped>
-* {
-  margin: 10px;
-}
 
+
+
+
+<style lang="scss" scoped>
 .add {
   width: 600px;
   height: 100px;
   margin: 10px auto;
 }
-.inputs {
-  input {
-    width: 90px;
-  }
-  label {
-    width: 150px;
-  }
+// 总体框架
+.shuru {
+  width: 1000px;
+  height: 200px;
+  margin: 50px auto;
 }
-</style>
+</style>>
