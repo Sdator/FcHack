@@ -1,4 +1,4 @@
-import { 属性 } from "../../src/assets/数据.js";
+import { 属性类目 } from "../../src/assets/数据.js";
 
 function 取随机数(max) {
   return Math.floor(Math.random() * max);
@@ -17,19 +17,6 @@ function 读取文件二进制(file) {
   });
 }
 
-const 属性类目 = `
-力量
-敏捷
-智力
-生命
-魔法
-法防
-物防
-魔抗
-`
-  .trim()
-  .split("\n");
-
 class FCDate {
   // 默认条目属性
   static defaultData = {
@@ -38,33 +25,36 @@ class FCDate {
     地址: "0x10",
     数值: 500,
   };
+  data = [FCDate.defaultData];
 
-  // 静态属性 设置一个默认条目
-  static DB = [FCDate.defaultData];
-
-  constructor(db) {
-    // FCDate.DB = db;
-    //   单例模式
-    // FCDate.T = FCDate.T ?? this;
-    // return FCDate.T;
+  constructor() {
+    // 单例模式
+    FCDate.T = FCDate.T ?? this;
+    return FCDate.T;
   }
-
-  // 获取数据库条目数量
+  /**
+   * 获取数据库条目数量
+   */
   get size() {
-    return FCDate.DB.length;
+    return this.data.length;
   }
-  // 返回数据库数组列表
+  /**
+   * 返回数据库数组列表
+   */
   get list() {
-    return FCDate.DB;
+    return this.data;
   }
 
-  // 增加条目
-  add(v) {
-    if (v) v = Object.assign(FCDate.defaultData, v);
+  /**
+   * 增加条目
+   * @param {object} obj
+   */
+  add(obj) {
+    if (obj) obj = Object.assign(FCDate.defaultData, obj);
     //  需要利用 assign 函数来生成一个全新的数组 否则会因为引用关系出问题
     const 条目 = Object.assign(
       {},
-      v ?? {
+      obj ?? {
         属性: 属性类目[取随机数(属性类目.length)],
         // 长度: FCDate.DB[FCDate.DB.length - 1].长度,
         长度: 1,
@@ -73,14 +63,18 @@ class FCDate {
       }
     );
     // 插入条目
-    FCDate.DB.push(条目);
+    this.data.push(条目);
     console.log("DB:插入数据");
   }
 
-  // 删除条目
-  // 默认删除最后一个
+  /**
+   * 删除条目
+   * 移除指定位置数组
+   * 默认删除最后一个
+   * @param {number} num
+   */
   del(num = this.size - 1) {
-    FCDate.DB.splice(num, 1); // 移除指定位置数组
+    this.data.splice(num, 1);
     console.log("DB:删除数据");
   }
 }
@@ -91,4 +85,4 @@ class FCDate {
 // db.add({ 长度: 55 });
 // console.log(db.list, db.size, 2222);
 
-export { 读取文件二进制, FCDate };
+export { 读取文件二进制, FCDate, 取随机数 };
