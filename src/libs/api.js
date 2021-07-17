@@ -23,7 +23,9 @@ class FCDate {
     属性: "力量",
     长度: 1,
     地址: "0x10",
-    数值: 500,
+    自定义值: 500,
+    原始值: 0,
+    备注: "test",
   };
   data = [FCDate.defaultData];
 
@@ -79,10 +81,10 @@ class FCDate {
   }
 }
 
-// const db = new FCDate();
+const db = new FCDate();
 // db.add();
 // db.add({ 长度: 10086 });
 // db.add({ 长度: 55 });
 // console.log(db.list, db.size, 2222);
 
-export { 读取文件二进制, FCDate, 取随机数 };
+export { 读取文件二进制, db, FCDate, 取随机数 };
