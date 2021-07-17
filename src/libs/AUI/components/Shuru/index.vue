@@ -2,21 +2,22 @@
   <!-- 外层创建一个总框架 方便操控整体样式 -->
   <div class="shuru">
     <!--
-      @blob 文件讀取完畢往外發送事件 顺带返回二进制
+      @blob 文件二进制讀取完畢往外发送事件
     -->
     <InFiles @blob="envblob" />
     <br />
     <button class="add" @click="db.add()">添加</button>
     <!--
+      :blob 给组件传入的绑定数据
       data  绑定对象条目
-      @del  自定义事件 子组件被点击往外面传递
+      @Del  自定义事件 子组件被点击往外面传递
      -->
     <Tiaomu
       :blob="blob"
       v-for="(v, k) of data"
       :key="k"
       :data="v"
-      @e-Del="db.del(k)"
+      @del="db.del(k)"
     />
   </div>
 </template>
@@ -54,13 +55,14 @@ const db = ref(new FCDate());
 const data = ref(db.value.data);
 
 watch(data.value, (n, o) => {
-  // console.log(n, o, "监听");
+  console.log(n, o, "监听");
 });
 
-// 子组件往外发送的自定义事件
-// 得到拖放窗返回的二进制数据
-
 const blob = ref();
+/**
+ * 子组件往外发送的自定义事件
+ * 得到拖放窗返回的二进制数据
+ */
 function envblob(v) {
   blob.value = v;
   // console.log(blob, blob.value, 666);
@@ -86,8 +88,9 @@ function envblob(v) {
 }
 // 总体框架
 .shuru {
-  width: 1000px;
+  // width: 1000px;
   height: 200px;
   margin: 50px auto;
+  margin-left: 200px;
 }
 </style>>
