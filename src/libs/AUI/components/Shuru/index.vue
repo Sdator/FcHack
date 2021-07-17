@@ -8,8 +8,8 @@
     <br />
     <button class="add" @click="db.add()">添加</button>
     <!--
-      :blob 给组件传入的绑定数据
-      data  绑定对象条目
+      :blob   给组件传入的绑定数据
+      :data  绑定对象条目 用于传递给子组件
       @Del  自定义事件 子组件被点击往外面传递
      -->
     <Tiaomu
