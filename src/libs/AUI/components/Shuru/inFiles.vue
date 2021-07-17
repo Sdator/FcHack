@@ -1,12 +1,8 @@
 <template>
-  <!-- <div
-    class="files"
-    @ondrop.prevent="drop_handler"
-    @ondragover.prevent="dragstart_handler"
-  >
+  <div id="drop" @dragover.prevent="dragover" @drop.prevent="drop" class="drop">
     把文件拖放进来
-  </div> -->
-  <input class="infile" type="file" @change="Egetfile" />
+  </div>
+  <input class="infile" type="file" @change="getFile" />
 </template>
 
 <script setup>
@@ -18,21 +14,38 @@ import { 读取文件二进制 } from "../../../api.js";
 const emit = defineEmits(["blob"]);
 
 const file = ref();
-const filename = ref();
 const fileblob = ref();
 
 // 文件选择框 内容改变事件
-const Egetfile = (e) => {
-  file.value = e.target.files[0];
-  filename.value = e.target.value;
+// const getFile = (e, files) => getFileCall(e);
+const getFile = (e, files) => {
+  file.value = files ?? e.target.files[0];
+  console.log("得到文件", files);
 };
 
+// 如果有传入参数2 优先使用
+// const getFileCall = (e, files) => {
+//   file.value = files ?? e.target.files[0];
+//   console.log(file.value, files, "得到文件");
+// };
+
+function drop(e) {
+  let files = e.dataTransfer.files;
+  // 拖放非文件类型抛出错误
+  if (!files.length) throw new Error("未找到文件");
+  getFile(e, e.dataTransfer.files[0]);
+  console.log("在放置区域中释放拖放");
+}
+
 function 获取文件数据() {
-  watch(filename, async (n, o) => {
-    if (filename.value == "") return;
+  watch(file, async (n, o) => {
+    console.log(file.value.name, "文件发生变化");
+
+    if (file.value.name == "") return;
     fileblob.value = await 读取文件二进制(file.value);
     // 向父组件发送事件通知
     emit("blob", fileblob);
+    console.log("二进制读取完毕：往父组件发送事件");
   });
 }
 
@@ -41,26 +54,6 @@ try {
 } catch (error) {
   console.log(error, "读取文件失败");
 }
-
-// const getfile = computed((a) => {
-//   console.log(a, "改变了");
-// });
-
-// const drop_handler = function () {
-//   console.log(e);
-// };
-
-// const dragstart_handler = function () {
-//   console.log(e);
-// };
-
-// Get the element by id
-
-// window.addEventListener("DOMContentLoaded", () => {
-//   const element = document.getElementById("files");
-//   // Add the ondragstart event listener
-//   element.addEventListener("dragstart", dragstart_handler);
-// });
 </script>>
 
 
@@ -70,9 +63,15 @@ try {
   margin-top: 10px;
 }
 
-.files {
+.drop {
   width: 500px;
   height: 300px;
   border: dashed red;
+}
+
+.test {
+  width: 100px;
+  height: 60px;
+  background-color: brown;
 }
 </style>
