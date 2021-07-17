@@ -1,4 +1,5 @@
 import Shuru from "./components/Shuru/index.vue";
+// import Shuru from "./components/Shuru/indexEX.vue";
 
 // 返回一个对象给vue调用
 const AUI = {};
