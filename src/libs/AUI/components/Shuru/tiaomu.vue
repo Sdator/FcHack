@@ -6,14 +6,34 @@
 
     地址：<input type="text" v-model="data.地址" />
 
-    数值：<label for="">{{ data.数值 }}</label>
+    自定义值：<input type="text" v-model="data.自定义值" />
+
+    原始值：<label>{{ data.原始值 }}</label>
+
+    提示：<label :style="{ color: classStatus ? 'darkgreen' : 'red' }">{{
+      classStatus ? "读取成功" : "地址超出范围"
+    }}</label>
+
     <!-- 往父组件传递一个自定义事件 -->
-    <button @click="$emit('eDel')">❌</button>
+    <button @click="$emit('del')">❌</button>
   </div>
 </template>
 
 <script setup>
-import { defineProps, reactive, ref, toRefs, watch } from "vue";
+import {
+  defineProps,
+  reactive,
+  ref,
+  toRefs,
+  vModelCheckbox,
+  watch,
+  watchEffect,
+} from "vue";
+
+const msg = ref("test");
+
+// 样式
+const classStatus = ref(true);
 
 // 暴露属性
 const props = defineProps({
@@ -21,28 +41,36 @@ const props = defineProps({
   blob: Object,
   // 大小端
   endian: Boolean,
-
+  // 由于父组件传入的 props.data 是代理对象 可以使用监听函数
   data: {
     type: Object,
     default: {
       属性: "力量",
       长度: 1,
       地址: "0x10",
-      数值: 500,
+      原始值: 500,
+      自定义值: 500,
+      备注: "test",
     },
   },
 });
 
-// 由于父组件传入的二进制数据是代理对象 可以使用监听函数
-watch(props.data, (v) => {
+// 读取修改二进制
+function crudBlob(obj) {
   if (!props.blob) return;
+  const blob = props.blob.value;
   // 转为十进制
-  let 地址 = new Number(v.地址);
-  if (地址 > props.blob.byteLength) return;
+  let 地址 = new Number(obj.地址);
+  if (地址 > blob.byteLength) {
+    classStatus.value = false;
+    return;
+  }
+  classStatus.value = true;
+  console.log("数据更新", blob, blob.byteLength);
 
-  const view1 = new DataView(props.blob.value);
+  const view1 = new DataView(blob);
   let 数值 = 0;
-  switch (v.长度) {
+  switch (obj.长度) {
     case 1:
       数值 = view1.getUint8(地址);
       break;
@@ -55,9 +83,18 @@ watch(props.data, (v) => {
     default:
       return;
   }
-  v.数值 = 数值;
+  props.data.原始值 = 数值;
   console.log(view1, 22222222);
+}
+
+watch(props.data, (obj) => {
+  crudBlob(obj);
+  // console.log(props.data, obj, 111111111122222);
 });
+
+// watch(自定义值, (obj) => {
+//   console.log("地址变了", obj);
+// });
 </script>
 
 <style lang="scss" scoped>
