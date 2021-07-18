@@ -3,15 +3,23 @@
     <tr>
       <td><input type="text" v-model="data.属性" /></td>
       <td><input type="number" v-model.number="data.长度" /></td>
-      <td><input type="text" v-model="data.地址" /></td>
+      <td><input class="zhong" type="text" v-model="data.地址" /></td>
       <td>
         <input type="text" v-model="data.自定义值" placeholder="修改的值" />
+      </td>
+      <td>
+        <input
+          class="zhong"
+          type="text"
+          v-model="data.备注"
+          placeholder="详细描述"
+        />
       </td>
       <td>
         <label>{{ data.原始值 }}</label>
       </td>
       <td>
-        <label :style="msgClass">{{ msg }}</label>
+        <label class="msg" :style="msgClass">{{ msg }}</label>
       </td>
       <th><button @click="$emit('remote')">❌</button></th>
     </tr>
@@ -44,8 +52,7 @@ const props = defineProps({
       地址: "0x10",
       原始值: 500,
       自定义值: 500,
-      备注: "test",
-      addr: 200,
+      备注: "",
     },
   },
 });
@@ -171,12 +178,18 @@ watch([长度, 地址], ([len, addr]) => {
   margin: 10px;
 }
 
-.inputs {
-  input {
-    width: 90px;
-  }
-  label {
-    width: 150px;
-  }
+input {
+  width: 70px;
+}
+.zhong {
+  width: 100px;
+}
+
+.msg {
+  width: 200px;
+}
+
+label {
+  width: 150px;
 }
 </style>

@@ -29,7 +29,15 @@ export default {
 <script setup>
 import { defineProps, watch, reactive } from "vue";
 
-const th = reactive(["  属性", "长度", "地址", " 原始值", "自定义值", "备注"]);
+const th = reactive([
+  "属性",
+  "长度",
+  "地址",
+  "自定义值",
+  "备注",
+  "原始值",
+  "提示",
+]);
 const db = reactive([]);
 
 const porps = defineProps({
@@ -41,10 +49,9 @@ function add() {
     属性: "力量",
     长度: 1,
     地址: "0x10",
-    addr: 100,
     自定义值: 500,
     原始值: 0,
-    备注: "test",
+    备注: "",
   });
   console.log(db, "DB");
 }
