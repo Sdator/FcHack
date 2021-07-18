@@ -1,5 +1,5 @@
 import Shuru from "./components/Shuru/index.vue";
-// import Shuru from "./components/Shuru/indexEX.vue";
+import ShuruEx from "./components/Shuru/indexEX.vue";
 
 // 返回一个对象给vue调用
 const AUI = {};
@@ -8,6 +8,7 @@ const AUI = {};
 AUI.install = function (Vue) {
   // 全局注册组件库
   Vue.component(Shuru.name, Shuru);
+  Vue.component(ShuruEx.name, ShuruEx);
 };
 
 export default AUI;

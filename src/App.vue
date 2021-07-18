@@ -1,5 +1,6 @@
 <template>
-  <Shuru />
+  <!-- <Shuru /> -->
+  <ShuruEx />
 </template>
 
 
@@ -12,4 +13,4 @@
 
 
 <style lang="scss" scoped>
-</style>>
+</style>
