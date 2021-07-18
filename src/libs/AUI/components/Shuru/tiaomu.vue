@@ -9,10 +9,9 @@
     自定义值：<input type="text" v-model="data.自定义值" />
 
     原始值：<label>{{ data.原始值 }}</label>
+    <!-- 原始值：<label>{{ data }}</label> -->
 
-    提示：<label :style="{ color: classStatus ? 'darkgreen' : 'red' }">{{
-      classStatus ? "读取成功" : "地址超出范围"
-    }}</label>
+    提示：<label :style="msgClass">{{ msg }}</label>
 
     <!-- 往父组件传递一个自定义事件 -->
     <button @click="$emit('del')">❌</button>
@@ -21,19 +20,55 @@
 
 <script setup>
 import {
+  computed,
   defineProps,
   reactive,
   ref,
+  watch,
   toRefs,
   vModelCheckbox,
-  watch,
   watchEffect,
 } from "vue";
 
-const msg = ref("test");
-
 // 样式
-const classStatus = ref(true);
+// const classStatus = ref(true);
+
+// 提示信息 样式值
+// const msgClass = reactive({
+//   color: classStatus.value ? "darkgreen" : "red",
+//   backgroundColor: classStatus.value ? "aquamarine" : "#000",
+// });
+
+const msgSystem = reactive({
+  classStatus: false,
+  msgClass: {
+    color: classStatus ? "darkgreen" : "red",
+    backgroundColor: classStatus ? "aquamarine" : "#000",
+  },
+  msg: computed(() => {
+    console.log(classStatus, 55555555555);
+
+    if (!props.blob) {
+      classStatus = false;
+      return "还没有读入文件";
+    }
+    return classStatus ? "读取成功" : "地址超出范围";
+  }),
+});
+
+const { classStatus, msgClass, msg } = toRefs(msgSystem);
+
+console.log(classStatus, 2222222222);
+
+// const msgs=Symbol("读取成功" , "地址超出范围",)
+// 提示信息
+// const msg = computed(() => {
+//   if (!props.blob) {
+//     classStatus.value = false;
+//     return "还没有读入文件";
+//   }
+//   return classStatus.value ? "读取成功" : "地址超出范围";
+// });
 
 // 暴露属性
 const props = defineProps({
@@ -51,6 +86,7 @@ const props = defineProps({
       原始值: 500,
       自定义值: 500,
       备注: "test",
+      addr: 200,
     },
   },
 });
@@ -61,11 +97,15 @@ function crudBlob(obj) {
   const blob = props.blob.value;
   // 转为十进制
   let 地址 = new Number(obj.地址);
+  console.log(地址, blob.byteLength, "长度检查");
   if (地址 > blob.byteLength) {
+    console.log("大于");
     classStatus.value = false;
     return;
   }
   classStatus.value = true;
+
+  console.log(classStatus.value, 22222222);
   console.log("数据更新", blob, blob.byteLength);
 
   const view1 = new DataView(blob);
@@ -87,14 +127,55 @@ function crudBlob(obj) {
   console.log(view1, 22222222);
 }
 
-watch(props.data, (obj) => {
-  crudBlob(obj);
-  // console.log(props.data, obj, 111111111122222);
-});
+// const dataE = reactive(props.data);
+// console.log(dataE, props.data === dataE, 3333333333);
+// props.data = data;
+// const data = ref(props.data);
+// watch(
+//   () => props.data,
+//   (obj, n) => {
+//     crudBlob(obj);
+//     console.log(obj, n, 1111111);
+//   }
+// );
 
-// watch(自定义值, (obj) => {
-//   console.log("地址变了", obj);
-// });
+// 封装一下才能读取
+const 传入数据 = reactive(props.data);
+const { 长度, 地址 } = toRefs(传入数据);
+
+watch([长度, 地址], ([len, addr]) => {
+  if (!props.blob) return;
+  const blob = props.blob.value;
+  // 转为十进制
+  let 地址 = new Number(addr);
+  console.log(地址, blob.byteLength, "长度检查");
+
+  if (地址 > blob.byteLength) {
+    console.log("大于");
+    classStatus.value = false;
+    return;
+  }
+
+  classStatus.value = true;
+  console.log("数据更新", classStatus.value, blob, blob.byteLength);
+  const view1 = new DataView(blob);
+  let 数值 = 0;
+  switch (len) {
+    case 1:
+      数值 = view1.getUint8(地址);
+      break;
+    case 2:
+      数值 = view1.getUint16(地址);
+      break;
+    case 4:
+      数值 = view1.getUint32(地址);
+      break;
+    default:
+      return;
+  }
+  props.data.原始值 = 数值;
+  console.log(view1, 22222222);
+});
 </script>
 
 <style lang="scss" scoped>

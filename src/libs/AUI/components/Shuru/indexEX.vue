@@ -29,7 +29,7 @@ import InFiles from "./inFiles.vue";
 
 export default {
   // 逐渐名称
-  name: "Shuru",
+  name: "ShuruEx",
   // 注册组件
   components: {
     Tiaomu,
@@ -49,19 +49,19 @@ import {
   toRefs,
 } from "vue";
 
-const data = {
-  属性: "力量",
-  长度: 1,
-  地址: "0x10",
-  自定义值: 500,
-  原始值: 0,
-  备注: "test",
-};
-
 const db = reactive([]);
 
 function add() {
-  db.push(data);
+  db.push({
+    属性: "力量",
+    长度: 1,
+    地址: "0x10",
+    addr: 100,
+    自定义值: 500,
+    原始值: 0,
+    备注: "test",
+  });
+  console.log(db, "DB");
 }
 function del(num) {
   db.splice(num, 1);
@@ -84,9 +84,6 @@ function envblob(v) {
   blob.value = v;
 }
 </script>
-
-
-
 
 
 <style lang="scss" scoped>
