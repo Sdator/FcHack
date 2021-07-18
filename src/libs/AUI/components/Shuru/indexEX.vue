@@ -4,27 +4,30 @@
     <!--
       @blob 文件二进制讀取完畢往外发送事件
     -->
-    <InFiles @blob="envblob" />
+    <InFiles @blob="setBlob" />
     <br />
-    <button class="add" @click="add()">添加</button>
+    <!-- <button class="add" @click="add()">添加</button> -->
+
+    <Tab :blob="blob" />
     <!--
       :blob 给组件传入的绑定数据
       data  绑定对象条目
       @Del  自定义事件 子组件被点击往外面传递
      -->
-    <Tiaomu
+    <!-- <Tiaomu
       :blob="blob"
       v-for="(v, k) of db"
       :key="k"
       :data="v"
-      @del="del(k)"
-    />
+      @remote="remoteTodo(k)"
+    /> -->
   </div>
 </template>
 
 <script>
 // 导入组件内部使用 不全局注册
-import Tiaomu from "./tiaomu.vue";
+// import Tiaomu from "./tiaomu.vue";
+import Tab from "./tab.vue";
 import InFiles from "./inFiles.vue";
 
 export default {
@@ -32,66 +35,28 @@ export default {
   name: "ShuruEx",
   // 注册组件
   components: {
-    Tiaomu,
     InFiles,
+    Tab,
   },
 };
 </script>
 
 <script setup>
-import {
-  defineProps,
-  computed,
-  ref,
-  watch,
-  reactive,
-  toRef,
-  toRefs,
-} from "vue";
+import { ref } from "vue";
 
-const db = reactive([]);
-
-function add() {
-  db.push({
-    属性: "力量",
-    长度: 1,
-    地址: "0x10",
-    addr: 100,
-    自定义值: 500,
-    原始值: 0,
-    备注: "test",
-  });
-  console.log(db, "DB");
-}
-function del(num) {
-  db.splice(num, 1);
-  console.log("DB:删除数据", num);
-}
-
-watch(
-  () => [...db],
-  (n, o) => {
-    console.log(n, o, "监听");
-  }
-);
-
-const blob = ref();
 /**
  * 子组件往外发送的自定义事件
  * 得到拖放窗返回的二进制数据
  */
-function envblob(v) {
+const blob = ref();
+function setBlob(v) {
+  console.log("收到子组件数据", v);
   blob.value = v;
 }
 </script>
 
 
 <style lang="scss" scoped>
-.add {
-  width: 600px;
-  height: 100px;
-  margin: 10px auto;
-}
 // 总体框架
 .shuru {
   // width: 1000px;

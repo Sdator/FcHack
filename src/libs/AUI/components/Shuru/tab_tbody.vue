@@ -1,38 +1,33 @@
 <template>
-  <div class="inputs">
-    属性：<input type="text" v-model="data.属性" />
-
-    长度：<input type="number" v-model.number="data.长度" />
-
-    地址：<input type="text" v-model="data.地址" />
-
-    自定义值：<input
-      type="text"
-      v-model="data.自定义值"
-      placeholder="修改的值"
-    />
-
-    原始值：<label>{{ data.原始值 }}</label>
-    <!-- 原始值：<label>{{ data }}</label> -->
-
-    提示：<label :style="msgClass">{{ msg }}</label>
-
-    <!-- 往父组件传递一个自定义事件 -->
-    <button @click="$emit('remote')">❌</button>
-  </div>
+  <tbody>
+    <tr>
+      <td><input type="text" v-model="data.属性" /></td>
+      <td><input type="number" v-model.number="data.长度" /></td>
+      <td><input type="text" v-model="data.地址" /></td>
+      <td>
+        <input type="text" v-model="data.自定义值" placeholder="修改的值" />
+      </td>
+      <td>
+        <label>{{ data.原始值 }}</label>
+      </td>
+      <td>
+        <label :style="msgClass">{{ msg }}</label>
+      </td>
+      <th><button @click="$emit('remote')">❌</button></th>
+    </tr>
+  </tbody>
 </template>
 
+<script>
+export default {
+  name: "TabTbody",
+};
+</script>
+
+
+
 <script setup>
-import {
-  computed,
-  defineProps,
-  reactive,
-  ref,
-  watch,
-  toRefs,
-  vModelCheckbox,
-  watchEffect,
-} from "vue";
+import { computed, defineProps, reactive, ref, watch, toRefs } from "vue";
 
 // 暴露属性
 const props = defineProps({
