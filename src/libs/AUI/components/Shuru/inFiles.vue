@@ -7,7 +7,14 @@
   >
     {{ msg }}
   </div>
-  <input class="infile" type="file" @change="getFile" />
+  <!-- 代理触发 -->
+  <input ref="inNesFile" v-show="false" type="file" @change="getFile" />
+  <button @click="$refs.inNesFile.click()">导入要修改的文件</button>
+  <button @click="exNesFile">确认修改并导出文件</button>
+
+  <input ref="inJson" v-show="false" type="file" />
+  <button @click="exJsonFile">导出json</button>
+  <button @click="$refs.inJson.click()">导入json</button>
 </template>
 
 <script setup>
@@ -28,6 +35,45 @@ const msgClass = computed(() => {
     backgroundColor: classStatus.value ? "aquamarine" : "#000",
   };
 });
+
+// 触发下载
+function exJsonFile() {
+  const blob = new Blob([localStorage["db"]]);
+  // const src = URL.createObjectURL(blob);
+  download(blob, "db.json");
+  // console.log(blob, src, 55555555);
+  // window.open(src, "_blank");
+}
+
+function fileDownload(content, filename) {
+  // 创建隐藏的可下载链接
+  var eleLink = document.createElement("a");
+  eleLink.download = filename;
+  eleLink.style.display = "none";
+  // 字符内容转变成blob地址
+  var blob = new Blob([content]);
+  eleLink.href = URL.createObjectURL(blob);
+  // 触发点击
+  document.body.appendChild(eleLink);
+  eleLink.click();
+  // 然后移除
+  document.body.removeChild(eleLink);
+}
+
+function download(data, name) {
+  const url = URL.createObjectURL(
+    new Blob([data], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    })
+  );
+  const link = document.createElement("a");
+  link.style.display = "none";
+  link.href = url;
+  link.setAttribute("download", name);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
 
 // 文件选择框 内容改变事件
 const getFile = (e, files) => {
@@ -66,19 +112,19 @@ try {
 
 
 <style lang="scss" scoped>
-* {
-  margin-top: 10px;
-}
-
 .drop {
   width: 500px;
   height: 300px;
   border: dashed red;
 }
 
-.test {
-  width: 100px;
+button {
+  width: 200px;
   height: 60px;
-  background-color: brown;
+  margin: 10px;
+}
+
+.file {
+  border: dashed red;
 }
 </style>

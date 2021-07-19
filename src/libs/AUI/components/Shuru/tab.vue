@@ -11,7 +11,7 @@
     </thead>
     <TabTbody
       :blob="blob"
-      v-for="(v, k) of fildb"
+      v-for="v of fildb"
       :key="v.id"
       :data="v"
       @remote="remoteTodo"
@@ -23,7 +23,6 @@
 
 <script>
 import TabTbody from "./tab_tbody.vue";
-import { defineProps, watch, reactive, ref, computed } from "vue";
 import { 属性 } from "../../../../assets/数据";
 import { 取随机数 } from "../../../api";
 
@@ -35,7 +34,7 @@ export default {
   },
   data() {
     return {
-      db: [],
+      db: JSON.parse(localStorage["db"] ?? "[]"),
       key: 0,
       th: ["属性", "长度", "地址", "自定义值", "备注", "原始值", "提示"],
       模糊搜索: "",
@@ -48,7 +47,7 @@ export default {
         属性: 属性.取随机属性,
         长度: 1,
         地址: "0x" + 取随机数(50000).toString(16).toUpperCase(),
-        自定义值: 0,
+        自定义值: "",
         备注: "",
       });
       console.log(this.db, "DB");
@@ -56,21 +55,23 @@ export default {
     remoteTodo(tudo) {
       this.db = this.db.filter((v) => {
         // console.log(v, tudo, v !== tudo, 2222222222);
-        return tudo !== v;
+        return tudo.id !== v.id;
       });
       console.log("DB:删除数据", tudo);
     },
   },
   computed: {
+    // 因为计算属性中使用了 db 和 模糊搜索 因此他们发生变化就会执行
     fildb() {
-      console.log(this.db, "变化了");
+      // console.log(this.db, "变化了");
+      localStorage["db"] = JSON.stringify(this.db);
       return this.db.filter((p) => {
         if (this.模糊搜索) {
           let strs = "";
           for (const v of Object.entries(p)) {
             strs += v.join("\n");
           }
-          console.log(p, { ...p }, Object.entries(p), Object.entries({ ...p }));
+          // console.log(p, { ...p }, Object.entries(p), Object.entries({ ...p }));
           return strs.includes(this.模糊搜索);
         }
         return true;

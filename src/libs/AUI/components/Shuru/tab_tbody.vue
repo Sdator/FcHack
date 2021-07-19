@@ -1,11 +1,18 @@
 <template>
   <tbody>
     <tr>
-      <td><input type="text" v-model="data.属性" /></td>
+      <td><input type="text" v-model.trim="data.属性" /></td>
       <td><input type="number" v-model.number="data.长度" /></td>
-      <td><input class="zhong" type="text" v-model="data.地址" /></td>
       <td>
-        <input type="text" v-model="data.自定义值" placeholder="修改的值" />
+        <input
+          class="zhong"
+          type="text"
+          v-model.trim="data.地址"
+          placeholder="十六进制"
+        />
+      </td>
+      <td>
+        <input type="number" v-model="data.自定义值" placeholder="十进制" />
       </td>
       <td>
         <input
@@ -142,14 +149,14 @@ const { 长度, 地址 } = toRefs(传入数据);
 
 const 原始值 = ref();
 
-watch([长度, 地址], ([len, addr]) => {
-  if (!props.blob) return;
+function 读取文件数据() {
   const blob = props.blob;
+  if (!(blob instanceof ArrayBuffer)) return;
   // 转为十进制
-  let 地址 = new Number(addr);
-  console.log(地址, blob.byteLength, "长度检查");
+  let addr = new Number(地址.value);
+  console.log("长度检查:", addr, blob.byteLength);
 
-  if (地址 > blob.byteLength) {
+  if (addr > blob.byteLength) {
     console.log("大于");
     classStatus.value = false;
     return;
@@ -158,22 +165,60 @@ watch([长度, 地址], ([len, addr]) => {
   console.log("数据更新", classStatus.value, blob, blob.byteLength);
   const view1 = new DataView(blob);
   let 数值 = 0;
-  switch (len) {
+  switch (长度.value) {
     case 1:
-      数值 = view1.getUint8(地址);
+      数值 = view1.getUint8(addr);
       break;
     case 2:
-      数值 = view1.getUint16(地址);
+      数值 = view1.getUint16(addr);
       break;
     case 4:
-      数值 = view1.getUint32(地址);
+      数值 = view1.getUint32(addr);
       break;
     default:
       return;
   }
   原始值.value = 数值;
   console.log(view1, 22222222);
+}
+
+watch([长度, 地址, () => props.blob], () => {
+  读取文件数据();
+  console.log(长度.value, 地址.value, 66666666);
 });
+
+// watch([长度, 地址], ([len, addr]) => {
+//   const blob = props.blob;
+//   if (!(blob instanceof ArrayBuffer)) return;
+//   // 转为十进制
+//   let 地址 = new Number(addr);
+//   console.log("长度检查:", 地址, blob.byteLength);
+
+//   if (地址 > blob.byteLength) {
+//     console.log("大于");
+//     classStatus.value = false;
+//     return;
+//   }
+//   classStatus.value = true;
+//   console.log("数据更新", classStatus.value, blob, blob.byteLength);
+//   const view1 = new DataView(blob);
+//   let 数值 = 0;
+//   switch (len) {
+//     case 1:
+//       数值 = view1.getUint8(地址);
+//       break;
+//     case 2:
+//       数值 = view1.getUint16(地址);
+//       break;
+//     case 4:
+//       数值 = view1.getUint32(地址);
+//       break;
+//     default:
+//       return;
+//   }
+//   原始值.value = 数值;
+//   console.log(view1, 22222222);
+// });
 </script>
 
 <style lang="scss" scoped>
