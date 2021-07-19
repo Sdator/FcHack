@@ -1,4 +1,4 @@
-import { 属性类目 } from "../../src/assets/数据.js";
+import { 属性 } from "../../src/assets/数据.js";
 
 function 取随机数(max) {
   return Math.floor(Math.random() * max);
@@ -20,7 +20,7 @@ function 读取文件二进制(file) {
 class FCDate {
   // 默认条目属性
   static defaultData = {
-    属性: "力量",
+    属性: 属性.取随机属性,
     长度: 1,
     地址: "0x10",
     自定义值: 500,
@@ -57,7 +57,7 @@ class FCDate {
     const 条目 = Object.assign(
       {},
       obj ?? {
-        属性: 属性类目[取随机数(属性类目.length)],
+        属性: 属性.取随机属性,
         // 长度: FCDate.DB[FCDate.DB.length - 1].长度,
         长度: 1,
         地址: "0x" + 取随机数(100000).toString(16).toUpperCase(),

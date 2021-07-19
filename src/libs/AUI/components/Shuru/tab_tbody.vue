@@ -16,12 +16,14 @@
         />
       </td>
       <td>
-        <label>{{ data.原始值 }}</label>
+        <label>{{ 原始值 }}</label>
       </td>
       <td>
         <label class="msg" :style="msgClass">{{ msg }}</label>
       </td>
-      <th><button @click="$emit('remote')">❌</button></th>
+      <!-- 往父组件抛出事件 并包含当前 数据对象条目 通过条目来过滤 -->
+      <th><button @click="$emit('remote', data)">❌</button></th>
+      <slot></slot>
     </tr>
   </tbody>
 </template>
@@ -138,6 +140,8 @@ const { 长度, 地址 } = toRefs(传入数据);
 
 // console.log(props.blob, props.blob.value, 5555555555);
 
+const 原始值 = ref();
+
 watch([长度, 地址], ([len, addr]) => {
   if (!props.blob) return;
   const blob = props.blob;
@@ -150,7 +154,6 @@ watch([长度, 地址], ([len, addr]) => {
     classStatus.value = false;
     return;
   }
-
   classStatus.value = true;
   console.log("数据更新", classStatus.value, blob, blob.byteLength);
   const view1 = new DataView(blob);
@@ -168,7 +171,7 @@ watch([长度, 地址], ([len, addr]) => {
     default:
       return;
   }
-  props.data.原始值 = 数值;
+  原始值.value = 数值;
   console.log(view1, 22222222);
 });
 </script>
