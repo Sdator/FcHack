@@ -9,18 +9,27 @@
   </div>
   <!-- 代理触发 -->
   <input ref="inNesFile" v-show="false" type="file" @change="getFile" />
-  <button @click="$refs.inNesFile.click()">导入要修改的文件</button>
+  <button @click="inNesFile.click()">导入要修改的文件</button>
   <button @click="exNesFile">确认修改并导出文件</button>
 
   <input ref="inJson" v-show="false" type="file" />
   <button @click="exJsonFile">导出json</button>
-  <button @click="$refs.inJson.click()">导入json</button>
+  <button @click="inJson.click()">导入json</button>
 </template>
 
 <script setup>
 // 用于接受拖放文件
 import { computed, watch, ref, reactive, toRefs } from "vue";
 import { 读取文件二进制 } from "../../../api.js";
+
+function 按钮相关() {
+  const data = reactive({
+    inNesFile: null,
+    inJson: null,
+  });
+  return toRefs(data);
+}
+const { inNesFile, inJson } = 按钮相关();
 
 // 自定义事件
 const emit = defineEmits(["blob"]);
