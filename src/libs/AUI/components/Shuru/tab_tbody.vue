@@ -23,8 +23,12 @@
         />
       </td>
       <td>
-        <label>{{ 原始值 }}</label>
+        <label>{{ 十六进制 }}</label>
       </td>
+      <td>
+        <label>{{ 十进制 }}</label>
+      </td>
+
       <td>
         <label class="msg" :style="msgClass">{{ msg }}</label>
       </td>
@@ -34,13 +38,6 @@
     </tr>
   </tbody>
 </template>
-
-<script>
-export default {
-  name: "TabTbody",
-};
-</script>
-
 
 
 <script setup>
@@ -53,116 +50,51 @@ const props = defineProps({
   // 大小端
   endian: Boolean,
   // 由于父组件传入的 props.data 是代理对象 可以使用监听函数
-  data: {
-    type: Object,
-    default: {
-      属性: "力量",
-      长度: 1,
-      地址: "0x10",
-      原始值: 500,
-      自定义值: 500,
-      备注: "",
-    },
-  },
+  data: Object,
+  bigModel: Boolean, // 大小端切换
 });
 
-// 样式
-const classStatus = ref(false);
-
-// 提示信息 样式值
-const msgClass = computed(() => {
-  return {
-    color: classStatus.value ? "darkgreen" : "red",
-    backgroundColor: classStatus.value ? "aquamarine" : "#000",
-  };
-});
-
-// 提示信息
-const msg = computed(() => {
-  if (!props.blob) {
-    classStatus.value = false;
-    return "还没有读入文件";
-  }
-  return classStatus.value ? "读取成功" : "地址超出范围";
-});
-
-// const msgSystem = reactive({
-//   classStatus: ref(false),
-//   msgClass: {
-//     color: classStatus.value ? "darkgreen" : "red",
-//     backgroundColor: classStatus.value ? "aquamarine" : "#000",
-//   },
-//   msg: computed(() => {
-//     console.log(classStatus.value, 55555555555);
-
-//     if (!props.blob) {
-//       classStatus.value = false;
-//       return "还没有读入文件";
-//     }
-//     return classStatus.value ? "读取成功" : "地址超出范围";
-//   }),
-// });
-
-// const { classStatus, msgClass, msg } = toRefs(msgSystem);
-
-// 读取修改二进制
-function crudBlob(obj) {
-  if (!props.blob) return;
-  const blob = props.blob.value;
-  // 转为十进制
-  let 地址 = new Number(obj.地址);
-  console.log(地址, blob.byteLength, "长度检查");
-  if (地址 > blob.byteLength) {
-    console.log("大于");
-    classStatus.value = false;
-    return;
-  }
-  classStatus.value = true;
-
-  console.log(classStatus.value, 22222222);
-  console.log("数据更新", blob, blob.byteLength);
-
-  const view1 = new DataView(blob);
-  let 数值 = 0;
-  switch (obj.长度) {
-    case 1:
-      数值 = view1.getUint8(地址);
-      break;
-    case 2:
-      数值 = view1.getUint16(地址);
-      break;
-    case 4:
-      数值 = view1.getUint32(地址);
-      break;
-    default:
-      return;
-  }
-  props.data.原始值 = 数值;
-  console.log(view1, 22222222);
+// 处理提示信息和其样式
+function msgSystem() {
+  const data = reactive({
+    classStatus: false,
+    msgClass: computed(() => {
+      return {
+        color: data.classStatus ? "darkgreen" : "red",
+        backgroundColor: data.classStatus ? "aquamarine" : "#000",
+      };
+    }),
+    msg: computed(() => {
+      if (!props.blob) {
+        data.classStatus = false;
+        return "还没有读入文件";
+      }
+      return data.classStatus ? "读取成功" : "地址超出范围";
+    }),
+  });
+  return toRefs(data);
 }
+const { classStatus, msgClass, msg } = msgSystem();
 
 // 封装一下才能读取
 const 传入数据 = reactive(props.data);
 const { 长度, 地址 } = toRefs(传入数据);
 
-// console.log(props.blob, props.blob.value, 5555555555);
-
-const 原始值 = ref();
-
-function 读取文件数据() {
+function 获取数据(显示模式 = false) {
   const blob = props.blob;
+  // 是否 blob 是否 ArrayBuffer的实例
   if (!(blob instanceof ArrayBuffer)) return;
-  // 转为十进制
-  let addr = new Number(地址.value);
-  console.log("长度检查:", addr, blob.byteLength);
 
-  if (addr > blob.byteLength) {
-    console.log("大于");
+  // 转为十进制 检查地址是否正确
+  let addr = 地址.value * 1;
+
+  if (!addr || addr > blob.byteLength || 长度.value > 4) {
     classStatus.value = false;
     return;
   }
   classStatus.value = true;
-  console.log("数据更新", classStatus.value, blob, blob.byteLength);
+  // console.log("数据更新", classStatus.value, blob, blob.byteLength);
+
   const view1 = new DataView(blob);
   let 数值 = 0;
   switch (长度.value) {
@@ -170,73 +102,45 @@ function 读取文件数据() {
       数值 = view1.getUint8(addr);
       break;
     case 2:
-      数值 = view1.getUint16(addr);
+      数值 = view1.getUint16(addr, props.bigModel);
       break;
     case 4:
-      数值 = view1.getUint32(addr);
+      数值 = view1.getUint32(addr, props.bigModel);
       break;
     default:
       return;
   }
-  原始值.value = 数值;
-  console.log(view1, 22222222);
+
+  return 显示模式
+    ? /(.{2})(.{2})(.{2})(.{2})/g.exec(数值.toString(16).padStart(8, 0))
+    : 数值;
 }
 
-watch([长度, 地址, () => props.blob], () => {
-  读取文件数据();
-  console.log(长度.value, 地址.value, 66666666);
+const rawData = reactive({
+  十六进制: computed(() => {
+    return 获取数据(true);
+  }),
+  十进制: computed(() => {
+    return 获取数据(false);
+  }),
 });
 
-// watch([长度, 地址], ([len, addr]) => {
-//   const blob = props.blob;
-//   if (!(blob instanceof ArrayBuffer)) return;
-//   // 转为十进制
-//   let 地址 = new Number(addr);
-//   console.log("长度检查:", 地址, blob.byteLength);
-
-//   if (地址 > blob.byteLength) {
-//     console.log("大于");
-//     classStatus.value = false;
-//     return;
-//   }
-//   classStatus.value = true;
-//   console.log("数据更新", classStatus.value, blob, blob.byteLength);
-//   const view1 = new DataView(blob);
-//   let 数值 = 0;
-//   switch (len) {
-//     case 1:
-//       数值 = view1.getUint8(地址);
-//       break;
-//     case 2:
-//       数值 = view1.getUint16(地址);
-//       break;
-//     case 4:
-//       数值 = view1.getUint32(地址);
-//       break;
-//     default:
-//       return;
-//   }
-//   原始值.value = 数值;
-//   console.log(view1, 22222222);
-// });
+const { 十六进制, 十进制 } = toRefs(rawData);
 </script>
 
 <style lang="scss" scoped>
 * {
   margin: 10px;
 }
-
 input {
   width: 70px;
+  .zhong {
+    width: 100px;
+  }
 }
-.zhong {
-  width: 100px;
-}
-
 .msg {
   width: 200px;
 }
-
 label {
   width: 150px;
 }

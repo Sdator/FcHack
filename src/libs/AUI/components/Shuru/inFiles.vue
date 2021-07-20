@@ -10,11 +10,11 @@
   <!-- 代理触发 -->
   <input ref="inNesFile" v-show="false" type="file" @change="getFile" />
   <button @click="inNesFile.click()">导入要修改的文件</button>
-  <button @click="exNesFile">确认修改并导出文件</button>
+  <button @click="exNesFile" disabled>确认修改并导出文件</button>
 
   <input ref="inJson" v-show="false" type="file" />
   <button @click="exJsonFile">导出json</button>
-  <button @click="inJson.click()">导入json</button>
+  <button @click="inJson.click()" disabled>导入json</button>
 </template>
 
 <script setup>
@@ -47,9 +47,16 @@ const msgClass = computed(() => {
 
 // 触发下载
 function exJsonFile() {
-  const blob = new Blob([localStorage["db"]]);
-  // const src = URL.createObjectURL(blob);
-  download(blob, "db.json");
+  const name = file.value?.name ?? "db";
+
+  // const data = new Date();
+  // const Y = Dates.getFullYear();
+  // const M = Dates.getMonth() + 1;
+  // const D = Dates.getDate();
+  // const times = Y + (M < 10 ? "-0" : "-") + M + (D < 10 ? "-0" : "-") + D;
+
+  download(localStorage["config"], `${name}_${Date.now()}.json`);
+
   // console.log(blob, src, 55555555);
   // window.open(src, "_blank");
 }

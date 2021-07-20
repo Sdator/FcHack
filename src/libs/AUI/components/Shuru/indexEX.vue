@@ -2,25 +2,24 @@
   <!-- 外层创建一个总框架 方便操控整体样式 -->
   <div class="shuru">
     <InFiles @blob="setBlob" />
-
+    <br />
     <Tab :blob="blob" />
   </div>
 </template>
 
-<script>
+<script setup>
 // 导入组件内部使用 不全局注册
-
+// 在setup中可以直接导入插件使用 而不用设置componets
 import Tab from "./tab.vue";
 import InFiles from "./inFiles.vue";
+</script>
 
+
+
+<script>
 export default {
-  // 逐渐名称
+  // 全局注册 需要输入一下方便使用
   name: "ShuruEx",
-  // 注册组件
-  components: {
-    InFiles,
-    Tab,
-  },
   data() {
     return {
       blob: {},
