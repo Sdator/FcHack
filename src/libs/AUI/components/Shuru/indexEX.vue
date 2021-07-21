@@ -1,9 +1,9 @@
 <template>
   <!-- 外层创建一个总框架 方便操控整体样式 -->
   <div class="shuru">
-    <InFiles @blob="setBlob" />
+    <InFiles @blob="setBlob" @update="setDB" />
     <br />
-    <Tab :blob="blob" />
+    <Tab :blob="blob" :update="update" />
   </div>
 </template>
 
@@ -24,6 +24,7 @@ export default {
   data() {
     return {
       blob: {},
+      update: {},
     };
   },
   methods: {
@@ -34,6 +35,10 @@ export default {
     setBlob(blob) {
       console.log("收到子组件数据", blob);
       this.blob = blob;
+    },
+    setDB(db) {
+      console.log("收到子组件数据", db);
+      this.update = db;
     },
   },
 };

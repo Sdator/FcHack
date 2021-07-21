@@ -45,8 +45,9 @@ import TabTbody from "./tab_tbody.vue";
 import { reactive, ref, computed, toRefs } from "@vue/reactivity";
 import { 取随机数 } from "../../../api";
 import { 属性 } from "../../../../assets/数据";
+import { watch } from "@vue/runtime-core";
 
-const props = defineProps({ blob: Object });
+const props = defineProps({ blob: Object, update: Object });
 
 // 数据库管理
 function 数据库() {
@@ -82,7 +83,7 @@ function 数据库() {
         bigModel: data.bigModel,
       };
       localStorage["config"] = JSON.stringify(obj);
-      console.log("数据发生变化");
+      console.log("数据发生变化", data.db);
 
       const arr = data.db.filter((p) => {
         if (data.模糊搜索) {
@@ -100,22 +101,34 @@ function 数据库() {
     }),
   });
 
+  watch(
+    () => props.update,
+    (val) => {
+      console.log("收到邻居数据更新db", val);
+      data.bigModel = val.bigModel;
+      data.db = val.db;
+    }
+  );
+
   function 读取配置() {
     // 读取配置
-    const config = JSON.parse(localStorage?.config ?? "{}");
-
-    // 判断对象是否为空
-    if (JSON.stringify(config) !== "{}") {
-      // console.log(JSON.stringify(config) !== "{}", 55555555);
-      // console.log(config, config?.bigModel, 44444444444);
-      data.db = config?.db ?? data.db;
-      data.bigModel = config?.bigModel ?? data.bigModel;
-    }
-    // 兼容旧版
-    const oldDB = localStorage?.db ?? null;
-    if (oldDB) {
-      data.db = JSON.parse(oldDB ?? "[]");
-      localStorage.removeItem("db");
+    try {
+      const config = JSON.parse(localStorage["config"] ?? "{}");
+      // 判断对象是否为空
+      if (JSON.stringify(config) !== "{}") {
+        // console.log(JSON.stringify(config) !== "{}", 55555555);
+        // console.log(config, config?.bigModel, 44444444444);
+        data.db = config?.db ?? data.db;
+        data.bigModel = config?.bigModel ?? data.bigModel;
+      }
+      // 兼容旧版
+      const oldDB = localStorage?.db ?? null;
+      if (oldDB) {
+        data.db = JSON.parse(oldDB ?? "[]");
+        localStorage.removeItem("db");
+      }
+    } catch (error) {
+      localStorage.removeItem("config");
     }
   }
   读取配置();

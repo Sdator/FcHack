@@ -1,5 +1,35 @@
 import { 属性 } from "../../src/assets/数据.js";
 
+function fileDownload(content, filename) {
+  // 创建隐藏的可下载链接
+  var eleLink = document.createElement("a");
+  eleLink.download = filename;
+  eleLink.style.display = "none";
+  // 字符内容转变成blob地址
+  var blob = new Blob([content]);
+  eleLink.href = URL.createObjectURL(blob);
+  // 触发点击
+  document.body.appendChild(eleLink);
+  eleLink.click();
+  // 然后移除
+  document.body.removeChild(eleLink);
+}
+
+function download(data, name) {
+  const url = URL.createObjectURL(
+    new Blob([data], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    })
+  );
+  const link = document.createElement("a");
+  link.style.display = "none";
+  link.href = url;
+  link.setAttribute("download", name);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
 function 取随机数(max) {
   return Math.floor(Math.random() * max);
 }
@@ -87,4 +117,4 @@ const db = new FCDate();
 // db.add({ 长度: 55 });
 // console.log(db.list, db.size, 2222);
 
-export { 读取文件二进制, db, FCDate, 取随机数 };
+export { 读取文件二进制, db, FCDate, 取随机数, download };
