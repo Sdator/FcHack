@@ -46,41 +46,6 @@ import { 读取文件二进制, download } from "../../../api.js";
 // 自定义事件
 const emit = defineEmits(["blob", "update"]);
 
-function json相关() {
-  const data = reactive({
-    inJsonEl: null,
-    // 导入json
-    async inJson(e) {
-      const file = e.target.files?.[0];
-      // 文件验证
-      if (!(file.type == "application/json")) {
-        alert("文件格式错误");
-        return;
-      }
-
-      const text = await file.text();
-      // 转为对象 检查是否合法
-      const json = JSON.parse(text ?? {});
-      if (JSON.stringify(json) == "{}") return;
-
-      console.log("导入文件", json);
-      // 通知外部更新数据 考虑太麻烦直接刷新页面
-      emit("update", json);
-      // 刷新页面会导致文件句柄丢失 需要重新导入文件
-      // localStorage["config"] = text;
-      // location.reload();
-    },
-    // 导出json
-    exJsonFile() {
-      const name = data.file?.name ?? "db";
-      download(localStorage["config"], `${name}_${Date.now()}.json`);
-    },
-  });
-
-  return toRefs(data);
-}
-const { inJsonEl, exJsonFile, inJson } = json相关();
-
 function 获取文件数据() {
   const data = reactive({
     inNesFileEl: null,
@@ -126,6 +91,41 @@ function 获取文件数据() {
   return toRefs(data);
 }
 const { inNesFileEl, getFile, file, msg, msgClass } = 获取文件数据();
+
+function json相关() {
+  const data = reactive({
+    inJsonEl: null,
+    // 导入json
+    async inJson(e) {
+      const file = e.target.files?.[0];
+      // 文件验证
+      if (!(file.type == "application/json")) {
+        alert("文件格式错误");
+        return;
+      }
+
+      const text = await file.text();
+      // 转为对象 检查是否合法
+      const json = JSON.parse(text ?? {});
+      if (JSON.stringify(json) == "{}") return;
+
+      console.log("导入文件", json);
+      // 通知外部更新数据 考虑太麻烦直接刷新页面
+      emit("update", json);
+      // 刷新页面会导致文件句柄丢失 需要重新导入文件
+      // localStorage["config"] = text;
+      // location.reload();
+    },
+    // 导出json
+    exJsonFile() {
+      const name = file.value?.name ?? "db";
+      download(localStorage["config"], `${name}_${Date.now()}.json`);
+    },
+  });
+
+  return toRefs(data);
+}
+const { inJsonEl, exJsonFile, inJson } = json相关();
 </script>>
 
 
