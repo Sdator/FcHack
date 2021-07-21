@@ -1,10 +1,12 @@
 <template>
-  <!-- <Shuru /> -->
   <ShuruEx />
+  <by />
 </template>
 
 
 <script setup>
+import by from "./libs/AUI/components/作者.vue";
+
 // import HelloWorld from "./libs/AUI/components/HelloWorld.vue";
 // This starter template is using Vue 3 experimental <script setup> SFCs
 // Check out https://github.com/vuejs/rfcs/blob/master/active-rfcs/0040-script-setup.md

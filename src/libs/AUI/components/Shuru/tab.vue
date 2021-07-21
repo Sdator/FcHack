@@ -4,8 +4,9 @@
     <input type="text" v-model="模糊搜索" placeholder="模糊搜索" />
   </div>
 
-  <label>{{ bigModel ? "大端:" : "小端：" }}</label>
-  <input type="checkbox" v-model="bigModel" />
+  <!-- <label>{{ bigModel ? "大端:" : "小端：" }}</label> -->
+
+  大小端：<input type="checkbox" v-model="bigModel" />
 
   <br />
   <br />
@@ -31,18 +32,14 @@
 
 <script setup>
 import TabTbody from "./tab_tbody.vue";
-import { onMounted } from "@vue/runtime-core";
-
-// 生命周期
 </script>
 
 <script>
 import { 属性 } from "../../../../assets/数据";
 import { 取随机数 } from "../../../api";
+import { reactive, toRef } from "@vue/reactivity";
 
 export default {
-  name: "Tab",
-
   props: {
     blob: Object,
   },
@@ -69,8 +66,9 @@ export default {
     const config = JSON.parse(localStorage?.config ?? "{}");
     if (!(JSON.stringify(config) == "{}")) {
       console.log(JSON.stringify(config) == "{}", 55555555);
-      this.db = config.db;
-      this.bigModel = config.bigModel;
+      console.log(config, config?.bigModel, 44444444444);
+      this.db = config?.db ?? this.db;
+      this.bigModel = config?.bigModel ?? this.bigModel;
     }
   },
   methods: {

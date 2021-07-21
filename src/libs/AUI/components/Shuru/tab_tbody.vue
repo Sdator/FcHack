@@ -1,6 +1,7 @@
 <template>
   <tbody>
     <tr>
+      <!-- <td>{{data.序列}}</td> -->
       <td><input type="text" v-model.trim="data.属性" /></td>
       <td><input type="number" v-model.number="data.长度" /></td>
       <td>
@@ -14,14 +15,14 @@
       <td>
         <input type="number" v-model="data.自定义值" placeholder="十进制" />
       </td>
-      <td>
+      <!-- <td>
         <input
           class="zhong"
           type="text"
           v-model="data.备注"
           placeholder="详细描述"
         />
-      </td>
+      </td> -->
       <td>
         <label>{{ 十六进制 }}</label>
       </td>
@@ -65,7 +66,7 @@ function msgSystem() {
       };
     }),
     msg: computed(() => {
-      if (!props.blob) {
+      if (!(props.blob instanceof ArrayBuffer)) {
         data.classStatus = false;
         return "还没有读入文件";
       }

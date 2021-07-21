@@ -10,7 +10,8 @@
 <script setup>
 // 导入组件内部使用 不全局注册
 // 在setup中可以直接导入插件使用 而不用设置componets
-import Tab from "./tab.vue";
+// import Tab from "./tab.vue";
+import Tab from "./tab_组合APi.vue";
 import InFiles from "./inFiles.vue";
 </script>
 
@@ -45,8 +46,7 @@ export default {
 // 总体框架
 .shuru {
   // width: 1000px;
-  height: 200px;
-  margin: 50px auto;
-  margin-left: 200px;
+  height: 90%;
+  margin: 50px;
 }
 </style>>

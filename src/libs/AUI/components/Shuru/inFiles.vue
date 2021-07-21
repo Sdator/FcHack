@@ -9,12 +9,34 @@
   </div>
   <!-- 代理触发 -->
   <input ref="inNesFile" v-show="false" type="file" @change="getFile" />
-  <button @click="inNesFile.click()">导入要修改的文件</button>
-  <button @click="exNesFile" disabled>确认修改并导出文件</button>
+  <button
+    class="mdui-btn mdui-color-theme-accent mdui-ripple"
+    @click="inNesFile.click()"
+  >
+    导入要修改的文件
+  </button>
+  <button
+    class="mdui-btn mdui-color-theme-accent mdui-ripple"
+    @click="exNesFile"
+    disabled
+  >
+    确认修改并导出文件
+  </button>
 
   <input ref="inJson" v-show="false" type="file" />
-  <button @click="exJsonFile">导出json</button>
-  <button @click="inJson.click()" disabled>导入json</button>
+  <button
+    class="mdui-btn mdui-color-theme-accent mdui-ripple"
+    @click="exJsonFile"
+  >
+    导出json
+  </button>
+  <button
+    class="mdui-btn mdui-color-theme-accent mdui-ripple"
+    @click="inJson.click()"
+    disabled
+  >
+    导入json
+  </button>
 </template>
 
 <script setup>
@@ -56,8 +78,6 @@ function exJsonFile() {
   // const times = Y + (M < 10 ? "-0" : "-") + M + (D < 10 ? "-0" : "-") + D;
 
   download(localStorage["config"], `${name}_${Date.now()}.json`);
-
-  // console.log(blob, src, 55555555);
   // window.open(src, "_blank");
 }
 
@@ -138,9 +158,5 @@ button {
   width: 200px;
   height: 60px;
   margin: 10px;
-}
-
-.file {
-  border: dashed red;
 }
 </style>
