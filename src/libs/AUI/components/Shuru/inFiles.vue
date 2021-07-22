@@ -65,9 +65,9 @@ function 获取文件数据() {
         // 转为十进制 检查地址是否正确
         let addr = 地址 * 1;
 
-        console.log(addr, view1.byteLength, blob.byteLength);
-        if (addr > blob.byteLength || !自定义值) {
-          console.log("地址太长跳过", addr);
+        // console.log(addr, view1.byteLength, blob.byteLength);
+        if (addr > blob.byteLength || 长度 > 4) {
+          // console.log("地址太长跳过", addr);
           continue;
         }
 

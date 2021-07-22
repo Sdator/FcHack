@@ -75,18 +75,20 @@ function msgSystem() {
 const { classStatus, msgClass, msg } = msgSystem();
 
 // 封装一下才能读取
-const 传入数据 = reactive(props.data);
-const { 长度, 地址 } = toRefs(传入数据);
+const { 长度, 地址 } = props.data;
+
+// console.log(长度, 地址, 6666666666, props.data);
 
 function 获取数据(显示模式 = false) {
   const blob = props.blob;
+
   // 是否 blob 是否 ArrayBuffer的实例
   if (!(blob instanceof ArrayBuffer)) return;
 
   // 转为十进制 检查地址是否正确
-  let addr = 地址.value * 1;
+  let addr = 地址 * 1;
 
-  if (!addr || addr > blob.byteLength || 长度.value > 4) {
+  if (addr > blob.byteLength || 长度 > 4) {
     classStatus.value = false;
     return;
   }
@@ -95,7 +97,8 @@ function 获取数据(显示模式 = false) {
 
   const view1 = new DataView(blob);
   let 数值 = 0;
-  switch (长度.value) {
+
+  switch (长度) {
     case 1:
       数值 = view1.getUint8(addr);
       break;
