@@ -63,8 +63,9 @@ export default {
   },
   created() {
     // 读取配置
-    const config = JSON.parse(localStorage?.config ?? "{}");
-    if (!(JSON.stringify(config) == "{}")) {
+    const config = JSON.parse(localStorage.getItem("config"));
+    // 判断对象是否为空
+    if (config) {
       console.log(JSON.stringify(config) == "{}", 55555555);
       console.log(config, config?.bigModel, 44444444444);
       this.db = config?.db ?? this.db;
@@ -102,7 +103,7 @@ export default {
         db: this.db,
         bigModel: this.bigModel,
       };
-      localStorage["config"] = JSON.stringify(data);
+      localStorage.setItem("config", JSON.stringify(data));
 
       return this.db.filter((p) => {
         if (this.模糊搜索) {

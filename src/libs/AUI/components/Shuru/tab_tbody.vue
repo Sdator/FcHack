@@ -46,12 +46,9 @@ import { computed, defineProps, reactive, ref, watch, toRefs } from "vue";
 
 // 暴露属性
 const props = defineProps({
-  //父组件传递进来的
-  blob: Object,
-  // 大小端
-  endian: Boolean,
-  // 由于父组件传入的 props.data 是代理对象 可以使用监听函数
-  data: Object,
+  blob: Object, //父组件传递进来的
+  endian: Boolean, // 大小端
+  data: Object, // 由于父组件传入的 props.data 是代理对象 可以使用监听函数
   bigModel: Boolean, // 大小端切换
 });
 

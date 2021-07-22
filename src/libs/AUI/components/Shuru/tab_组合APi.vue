@@ -82,7 +82,8 @@ function 数据库() {
         db: data.db,
         bigModel: data.bigModel,
       };
-      localStorage["config"] = JSON.stringify(obj);
+      localStorage.setItem("config", JSON.stringify(obj));
+
       console.log("数据发生变化", data.db);
 
       const arr = data.db.filter((p) => {
@@ -113,16 +114,16 @@ function 数据库() {
   function 读取配置() {
     // 读取配置
     try {
-      const config = JSON.parse(localStorage["config"] ?? "{}");
+      const config = JSON.parse(localStorage.getItem("config"));
       // 判断对象是否为空
-      if (JSON.stringify(config) !== "{}") {
+      if (config) {
         // console.log(JSON.stringify(config) !== "{}", 55555555);
         // console.log(config, config?.bigModel, 44444444444);
         data.db = config?.db ?? data.db;
         data.bigModel = config?.bigModel ?? data.bigModel;
       }
       // 兼容旧版
-      const oldDB = localStorage?.db ?? null;
+      const oldDB = localStorage.getItem("db");
       if (oldDB) {
         data.db = JSON.parse(oldDB ?? "[]");
         localStorage.removeItem("db");
