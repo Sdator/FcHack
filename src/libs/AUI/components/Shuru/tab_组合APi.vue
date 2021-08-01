@@ -10,7 +10,9 @@
   </div>
 
   <div class="mdui-textfield mdui-textfield-floating-label">
-    <label class="mdui-textfield-label">模糊搜索</label>
+    <label class="mdui-textfield-label">
+      {{ 模糊搜索 ? 模糊搜索 : "模糊搜索" }}
+    </label>
     <input class="mdui-textfield-input" type="text" v-model="模糊搜索" />
   </div>
 
