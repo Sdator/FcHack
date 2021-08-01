@@ -1,12 +1,16 @@
 <template>
-  <div
-    @dragover.prevent="dragover"
-    @drop.prevent="getFile"
-    class="drop"
-    :style="msgClass"
-  >
-    {{ msg }}
-  </div>
+  <template class="top">
+    <div
+      @dragover.prevent="dragover"
+      @drop.prevent="getFile"
+      class="drop"
+      :style="msgClass"
+    >
+      {{ msg }}
+    </div>
+    <Tihuan />
+  </template>
+
   <!-- 代理触发 -->
   <input ref="inNesFileEl" v-show="false" type="file" @change="getFile" />
   <button
@@ -38,6 +42,8 @@
 </template>
 
 <script setup>
+import Tihuan from "./覆盖组件.vue";
+
 // 用于接受拖放文件
 import { computed, watch, ref, reactive, toRefs } from "vue";
 import { 读取文件二进制, download } from "../../../api.js";
@@ -173,10 +179,18 @@ const { inJsonEl, exJsonFile, inJson } = json相关();
 
 
 <style lang="scss" scoped>
+.top {
+  display: flex;
+  width: 80vw;
+  // height: 500px;
+  justify-content: space-around;
+}
 .drop {
   width: 500px;
   height: 300px;
+  margin: 50px;
   border: dashed red;
+  // float: left;
 }
 
 button {
