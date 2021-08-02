@@ -20,15 +20,22 @@
         >替换 <input type="radio" name="model" v-model="model" value="ti"
       /></label>
     </div>
-    <div>
-      <textarea v-model="blob" cols="30" rows="10"></textarea>
-    </div>
+    <StrInput />
+
+    <button
+      class="mdui-btn mdui-color-theme-accent mdui-ripple"
+      @click="exJsonFile"
+    >
+      确认修改
+    </button>
   </div>
 </template>
 
 <script setup>
 import { reactive, toRefs } from "@vue/reactivity";
 import { watch } from "@vue/runtime-core";
+
+import StrInput from "./文本输入框.vue";
 
 const data = reactive({
   model: "ti",
