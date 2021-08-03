@@ -16,7 +16,7 @@
     <input class="mdui-textfield-input" type="text" v-model="模糊搜索" />
   </div>
 
-  <label>{{ bigModel ? "大端:" : "小端：" }}</label>
+  <label>{{ bigModel ? "大端:" : "小端:" }}</label>
   <input type="checkbox" v-model="bigModel" />
 
   <br />
