@@ -29,7 +29,7 @@
           <th v-for="(name, k) of th" :key="k">{{ name }}</th>
         </tr>
       </thead>
-      <TabTbody
+      <TabItem
         :blob="blob"
         v-for="v of fildb"
         :key="v.id"
@@ -37,13 +37,13 @@
         @remote="remoteEntry"
         :bigModel="bigModel"
       >
-      </TabTbody>
+      </TabItem>
     </table>
   </div>
 </template>
 
 <script setup>
-import TabTbody from "./tab_tbody.vue";
+import TabItem from "./TabItem.vue";
 import { reactive, ref, computed, toRefs } from "@vue/reactivity";
 import { 取随机数 } from "../../../api";
 import { 属性 } from "../../../../assets/数据";
@@ -57,13 +57,12 @@ function 数据库() {
     模糊搜索: "",
     db: [],
     bigModel: true,
-    remoteEntry(tudo) {
-      data.db = data.db.filter((v) => {
-        // console.log(v, tudo, v !== tudo, 2222222222);
-        return tudo.id !== v.id;
-      });
-      console.log("DB:删除数据", tudo);
+    // 删除条目
+    remoteEntry(id) {
+      data.db = data.db.filter((tudo) => tudo.id !== id);
+      console.log("DB:删除数据", id);
     },
+    // 添加条目
     addEntry() {
       const obj = {
         id: Date.now(),
@@ -114,24 +113,24 @@ function 数据库() {
   );
 
   function 读取配置() {
-    // 读取配置
     try {
+      // 读取本地储存配置
       const config = JSON.parse(localStorage.getItem("config"));
-      // 判断对象是否为空
       if (config) {
-        // console.log(JSON.stringify(config) !== "{}", 55555555);
-        // console.log(config, config?.bigModel, 44444444444);
+        // 设置默认值
         data.db = config?.db ?? data.db;
         data.bigModel = config?.bigModel ?? data.bigModel;
       }
       // 兼容旧版
-      const oldDB = localStorage.getItem("db");
+      const oldDB = JSON.parse(localStorage.getItem("db"));
       if (oldDB) {
-        data.db = JSON.parse(oldDB ?? "[]");
+        data.db = oldDB ?? data.db;
+        // 删除旧版存储项
         localStorage.removeItem("db");
       }
     } catch (error) {
-      localStorage.removeItem("config");
+      // 如果报错清空所有缓存
+      localStorage.clear();
     }
   }
   读取配置();
@@ -152,7 +151,6 @@ const th = [
   "功能",
 ];
 </script>
-
 
 <style lang="scss" scoped>
 .样式功能按钮 {

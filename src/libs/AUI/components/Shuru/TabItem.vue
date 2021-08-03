@@ -1,25 +1,25 @@
 <template>
   <tbody>
     <tr>
-      <!-- <td>{{data.序列}}</td> -->
-      <td><input type="text" v-model.trim="data.属性" /></td>
-      <td><input type="number" v-model.number="data.长度" /></td>
+      <!-- <td>{{序列}}</td> -->
+      <td><input type="text" v-model.trim="属性" /></td>
+      <td><input type="number" v-model.number="长度" /></td>
       <td>
         <input
           class="zhong"
           type="text"
-          v-model.trim="data.地址"
+          v-model.trim="地址"
           placeholder="十六进制"
         />
       </td>
       <td>
-        <input type="number" v-model="data.自定义值" placeholder="十进制" />
+        <input type="number" v-model="自定义值" placeholder="十进制" />
       </td>
       <!-- <td>
         <input
           class="zhong"
           type="text"
-          v-model="data.备注"
+          v-model="备注"
           placeholder="详细描述"
         />
       </td> -->
@@ -34,7 +34,7 @@
         <label class="msg" :style="msgClass">{{ msg }}</label>
       </td>
       <!-- 往父组件抛出事件 并包含当前 数据对象条目 通过条目来过滤 -->
-      <th><button @click="$emit('remote', data)">❌</button></th>
+      <th><button @click="$emit('remote', id)">❌</button></th>
       <slot></slot>
     </tr>
   </tbody>
@@ -51,6 +51,10 @@ const props = defineProps({
   data: Object, // 由于父组件传入的 props.data 是代理对象 可以使用监听函数
   bigModel: Boolean, // 大小端切换
 });
+
+const { id, 属性, 长度, 地址, 自定义值, 备注, 序列 } = toRefs(props.data);
+
+console.log(id, 属性, 地址, 地址.value, 2222223333);
 
 // 处理提示信息和其样式
 function msgSystem() {
@@ -76,10 +80,8 @@ const { classStatus, msgClass, msg } = msgSystem();
 
 // 封装一下才能读取
 // const { 长度, 地址 } = props.data;
-const 传入数据 = reactive(props.data);
-const { 长度, 地址 } = toRefs(传入数据);
-
-// console.log(长度, 地址, 6666666666, props.data);
+// const 传入数据 = reactive(props.data);
+// const { 长度, 地址 } = toRefs(传入数据);
 
 function 获取数据(显示模式 = false) {
   const blob = props.blob;

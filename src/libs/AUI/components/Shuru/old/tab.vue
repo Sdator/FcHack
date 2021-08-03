@@ -31,12 +31,12 @@
 </template>
 
 <script setup>
-import TabTbody from "./tab_tbody.vue";
+import TabTbody from "../tab_item.vue";
 </script>
 
 <script>
-import { 属性 } from "../../../../assets/数据";
-import { 取随机数 } from "../../../api";
+import { 属性 } from "../../../../../assets/数据";
+import { 取随机数 } from "../../../../api";
 import { reactive, toRef } from "@vue/reactivity";
 
 export default {

@@ -46,6 +46,7 @@ watch(model, (a, b) => {
 <style lang="scss" scoped>
 .charu {
   width: 40vw;
+  // height: 50vmax;
 
   // position: absolute;
   // left: 600px;
