@@ -54,8 +54,6 @@ const props = defineProps({
 
 const { id, 属性, 长度, 地址, 自定义值, 备注, 序列 } = toRefs(props.data);
 
-console.log(id, 属性, 地址, 地址.value, 2222223333);
-
 // 处理提示信息和其样式
 function msgSystem() {
   const data = reactive({

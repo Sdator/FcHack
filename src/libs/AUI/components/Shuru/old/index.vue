@@ -25,7 +25,7 @@
 <script>
 // 导入组件内部使用 不全局注册
 import Tiaomu from "./tiaomu.vue";
-import InFiles from "../inFiles.vue";
+import InFiles from "../InFiles.vue";
 
 export default {
   // 逐渐名称

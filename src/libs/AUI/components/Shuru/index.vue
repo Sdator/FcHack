@@ -1,8 +1,8 @@
 <template>
   <!-- 外层创建一个总框架 方便操控整体样式 -->
   <div class="shuru">
-    <InFiles @blob="setBlob" @update="setDB" />
-    <br />
+    <InFiles @setBlob="setBlob" @update="setDB" />
+    <Tihuan />
     <Tab ref="test" :blob="blob" :update="update" />
     <button @click="demo(test)">点我</button>
   </div>
@@ -11,13 +11,15 @@
 <script setup>
 // 导入组件内部使用 不全局注册
 // 在setup中可以直接导入插件使用 而不用设置componets
-// import Tab from "./tab.vue";
+
 import Tab from "./TabList.vue";
-import InFiles from "./inFiles.vue";
+import InFiles from "./InFiles.vue";
+import Tihuan from "./覆盖组件.vue";
+
 import { ref } from "@vue/reactivity";
 
+// 測試用
 const test = ref(null);
-
 function demo(a) {
   console.log(test, abc);
   console.log(this, 22222);
@@ -33,9 +35,10 @@ export default {
   data() {
     return {
       blob: {},
-      update: {},
+      update: {}, // InFiles组件 导入 json 返回给 tab组件
     };
   },
+  // 測試用
   mounted() {
     console.log(this, 66666666);
   },
@@ -48,6 +51,11 @@ export default {
       console.log("收到子组件数据", blob);
       this.blob = blob;
     },
+
+    /**
+     * 子组件往外发送的自定义事件
+     * 返回导入的 json 数据
+     */
     setDB(db) {
       console.log("收到子组件数据", db);
       this.update = db;

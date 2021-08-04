@@ -1,28 +1,22 @@
 <template>
-  <template class="top">
-    <div
-      @dragover.prevent="dragover"
-      @drop.prevent="getFile"
-      class="drop"
-      :style="msgClass"
-    >
-      {{ msg }}
-    </div>
-    <Tihuan />
-  </template>
+  <div
+    @dragover.prevent="dragover"
+    @drop.prevent="openFile"
+    class="drop"
+    :style="msgClass"
+  >
+    {{ msg }}
+  </div>
 
   <!-- 代理触发 -->
-  <input ref="inNesFileEl" v-show="false" type="file" @change="getFile" />
+  <input ref="inNesFileEl" v-show="false" type="file" @change="openFile" />
   <button
     class="mdui-btn mdui-color-theme-accent mdui-ripple"
     @click="inNesFileEl.click()"
   >
     导入要修改的文件
   </button>
-  <button
-    class="mdui-btn mdui-color-theme-accent mdui-ripple"
-    @click="exNesFile"
-  >
+  <button class="mdui-btn mdui-color-theme-accent mdui-ripple" @click="outFile">
     确认修改并导出文件
   </button>
 
@@ -42,14 +36,12 @@
 </template>
 
 <script setup>
-import Tihuan from "./覆盖组件.vue";
-
 // 用于接受拖放文件
 import { computed, watch, ref, reactive, toRefs } from "vue";
 import { 读取文件二进制, download } from "../../../api.js";
 
 // 自定义事件 向外传出数据
-const emit = defineEmits(["blob", "update"]);
+const emit = defineEmits(["setBlob", "update"]);
 
 function 获取文件数据() {
   let blob = null;
@@ -58,52 +50,65 @@ function 获取文件数据() {
     classStatus: false,
     msg: "把文件拖放进来",
     file: null,
-    exNesFile() {
-      const data = JSON.parse(localStorage.getItem("config"));
-      if (!data || !blob) {
-        alert("没找到需要修改的数据");
-        return;
-      }
+    // 导出修改后的二进制数据文件
+    outFile() {
+      // 从本地储存中获取修改的内容数据
+      const localData = JSON.parse(localStorage.getItem("config"));
+      if (!localData || !blob)
+        return alert("没找到需要修改的数据or文件没有打开");
 
       const view1 = new DataView(blob);
 
-      for (const { 地址, 长度, 自定义值 } of data.db) {
+      for (const { 地址, 长度, 自定义值 } of localData.db) {
         // 转为十进制 检查地址是否正确
         let addr = 地址 * 1;
 
-        // console.log(addr, view1.byteLength, blob.byteLength);
-        if (addr > blob.byteLength || 长度 > 4) {
-          // console.log("地址太长跳过", addr);
-          continue;
-        }
+        // 跳过不符合规则的数据修改
+        if (addr > blob.byteLength || 长度 > 4) continue;
 
         switch (长度) {
           case 1:
             view1.setUint8(地址, 自定义值);
             break;
           case 2:
-            view1.setUint16(地址, 自定义值, data.bigModel);
+            view1.setUint16(地址, 自定义值, localData.bigModel);
             break;
           case 4:
-            view1.setUint32(地址, 自定义值, data.bigModel);
+            view1.setUint32(地址, 自定义值, localData.bigModel);
             break;
           default:
             break;
         }
       }
+      // 组织名称
       const name = file.value?.name ?? "db";
+      // 输出文件
       if (view1) {
         download(view1, `new_${name}`);
       }
     },
-    // 文件选择框 内容改变事件
-    getFile(e) {
+    // 拖拽文件 and 文件选择框 内容改变事件
+    async openFile(e) {
+      //获得 拖拽文件 和 选择文件
       const file = e.dataTransfer?.files?.[0] ?? e.target.files?.[0];
       if (!file) throw new Error("未找到文件");
       data.classStatus = true;
       data.msg = "得到文件:" + file.name;
       data.file = file;
-      console.log("得到文件", file);
+
+      // 监听文件变化
+      try {
+        if (!val?.size) {
+          data.msg = "文件似乎有问题";
+          return;
+        }
+        blob = await 读取文件二进制(data.file);
+        // 向父组件发送事件通知
+        emit("setBlob", blob);
+        console.log("二进制读取完毕：往父组件发送事件");
+      } catch (error) {
+        console.log(error, "读取文件失败");
+      }
     },
     // 拖放窗口样式
     msgClass: computed(() => {
@@ -114,28 +119,29 @@ function 获取文件数据() {
     }),
   });
 
-  try {
-    watch(
-      () => data.file,
-      async (val) => {
-        console.log("文件发生变化", val);
-        if (!val?.size) {
-          data.msg = "文件似乎有问题";
-          return;
-        }
-        blob = await 读取文件二进制(data.file);
-        // 向父组件发送事件通知
-        emit("blob", blob);
-        console.log("二进制读取完毕：往父组件发送事件");
-      }
-    );
-  } catch (error) {
-    console.log(error, "读取文件失败");
-  }
+  // // 监听文件变化
+  // try {
+  //   watch(
+  //     () => data.file,
+  //     async (val) => {
+  //       console.log("文件发生变化", val);
+  //       if (!val?.size) {
+  //         data.msg = "文件似乎有问题";
+  //         return;
+  //       }
+  //       blob = await 读取文件二进制(data.file);
+  //       // 向父组件发送事件通知
+  //       emit("setBlob", blob);
+  //       console.log("二进制读取完毕：往父组件发送事件");
+  //     }
+  //   );
+  // } catch (error) {
+  //   console.log(error, "读取文件失败");
+  // }
 
   return toRefs(data);
 }
-const { inNesFileEl, getFile, exNesFile, file, msg, msgClass } = 获取文件数据();
+const { inNesFileEl, openFile, outFile, file, msg, msgClass } = 获取文件数据();
 
 function json相关() {
   const data = reactive({
@@ -151,15 +157,16 @@ function json相关() {
 
       const text = await file.text();
       // 转为对象 检查是否合法
-      const json = JSON.parse(text ?? {});
-      if (JSON.stringify(json) == "{}") return;
-
-      console.log("导入文件", json);
-      // 通知外部更新数据 考虑太麻烦直接刷新页面
-      emit("update", json);
-      // 刷新页面会导致文件句柄丢失 需要重新导入文件
-      // localStorage["config"] = text;
-      // location.reload();
+      try {
+        const json = JSON.parse(text);
+        // 数据为空返回
+        if (json) return alert("导入的数据为空");
+        console.log("导入文件", json);
+        // 通知外部更新数据 某种情况下可以用刷新页面代替
+        emit("update", json);
+      } catch (error) {
+        console.error("导入数据不符合json标准", error);
+      }
     },
     // 导出json
     exJsonFile() {
@@ -179,12 +186,12 @@ const { inJsonEl, exJsonFile, inJson } = json相关();
 
 
 <style lang="scss" scoped>
-.top {
-  display: flex;
-  width: 80vw;
-  height: 500px;
-  justify-content: space-around;
-}
+// .top {
+// display: flex;
+// width: 80vw;
+// height: 500px;
+// justify-content: space-around;
+// }
 .drop {
   width: 500px;
   height: 300px;

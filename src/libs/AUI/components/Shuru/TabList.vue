@@ -76,6 +76,7 @@ function 数据库() {
       data.db.push(obj);
       console.log("DB:添加数据", obj);
     },
+    // 接管 db 用作显示 动态生成的
     fildb: computed(() => {
       // 因为计算属性中使用了 db 和 模糊搜索 因此他们发生变化就会执行
       // 写出配置
@@ -103,10 +104,11 @@ function 数据库() {
     }),
   });
 
+  // 导入 json 更新db数据
   watch(
     () => props.update,
     (val) => {
-      console.log("收到邻居数据更新db", val);
+      console.log("同步导入json的数据", val);
       data.bigModel = val.bigModel;
       data.db = val.db;
     }

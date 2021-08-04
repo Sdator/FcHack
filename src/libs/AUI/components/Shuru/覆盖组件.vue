@@ -1,4 +1,4 @@
-<template>
+<template class="charu">
   <div class="charu">
     <div class="mdui-textfield mdui-textfield-floating-label">
       <label class="mdui-textfield-label"
@@ -52,12 +52,15 @@ watch(model, (a, b) => {
 
 <style lang="scss" scoped>
 .charu {
-  width: 40vw;
-  // height: 50vmax;
-
-  // position: absolute;
-  // left: 600px;
-  // top: 50px;
+  // 绝对定位
+  position: absolute;
+  left: 700px;
+  top: 10px;
   // background-color: #f00;
+  // width: 40vw;
+  // height: 50vmax;
+}
+button {
+  margin-top: 20px;
 }
 </style>
