@@ -1,5 +1,22 @@
 import { 属性 } from "../../src/assets/数据.js";
 
+// 防抖
+export function debounce(time = 1000) {
+  let t;
+  return function (fn) {
+    // 获取参数 和 保存当前对象
+    const args = arguments;
+    const that = this;
+    // 清除上一次延时器
+    clearTimeout(t);
+    t = setTimeout(() => {
+      console.log(that, 4444444);
+      // 调用时传递
+      fn.apply(that, args);
+    }, time);
+  };
+}
+
 function fileDownload(content, filename) {
   // 创建隐藏的可下载链接
   var eleLink = document.createElement("a");
