@@ -9,13 +9,7 @@
   </footer>
 </template>
 
-
-
-<script>
-export default {};
-</script>
-
-<style>
+<style scoped>
 kbd {
   margin-right: 10px;
 }
