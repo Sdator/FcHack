@@ -42,7 +42,7 @@
 
 
 <script setup>
-import { computed, defineProps, reactive, ref, watch, toRefs } from "vue";
+import { computed, reactive, ref, watch, toRefs } from "vue";
 
 // 暴露属性
 const props = defineProps({

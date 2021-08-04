@@ -19,7 +19,7 @@
 
 <script setup>
 import { 读取文件二进制, download } from "../../../api.js";
-import { defineProps, ref, computed, reactive, toRefs } from "vue";
+import { ref, computed, reactive, toRefs } from "vue";
 
 const props = defineProps(["msg"]);
 const emits = defineEmits(["inFile", "outBlob"]);

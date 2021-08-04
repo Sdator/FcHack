@@ -18,7 +18,7 @@
 /**
  * 此组件用于点击按钮返回打开的文件列表
  */
-import { ref, defineEmits } from "vue";
+import { ref } from "vue";
 const openfileEl = ref(null);
 const props = defineProps(["title"]);
 const emits = defineEmits(["inFile"]);
