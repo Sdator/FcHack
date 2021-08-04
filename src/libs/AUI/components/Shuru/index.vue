@@ -3,27 +3,18 @@
   <div class="shuru">
     <InFiles @setBlob="setBlob" @update="setDB" />
     <Tihuan />
-    <Tab ref="test" :blob="blob" :update="update" />
-    <button @click="demo(test)">点我</button>
+    <Tab :blob="blob" :update="update" />
   </div>
 </template>
 
 <script setup>
 // 导入组件内部使用 不全局注册
 // 在setup中可以直接导入插件使用 而不用设置componets
-
 import Tab from "./TabList.vue";
 import InFiles from "./InFiles.vue";
 import Tihuan from "./覆盖组件.vue";
-
 import { ref } from "@vue/reactivity";
-
-// 測試用
-const test = ref(null);
-function demo(a) {
-  console.log(test, abc);
-  console.log(this, 22222);
-}
+import InFileButton from "./打开文件按钮.vue";
 </script>
 
 
@@ -40,7 +31,7 @@ export default {
   },
   // 測試用
   mounted() {
-    console.log(this, 66666666);
+    console.log(this, "index组件");
   },
   methods: {
     /**

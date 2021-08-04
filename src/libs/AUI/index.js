@@ -10,14 +10,6 @@ AUI.install = function (Vue) {
   // Vue.component(Shuru.name, Shuru);
   Vue.component(ShuruEx.name, ShuruEx);
 
-  Vue.mixin({
-    data() {
-      return {
-        test: 123465,
-      };
-    },
-  });
-
   console.log(Vue, 222222);
 };
 
