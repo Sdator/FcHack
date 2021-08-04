@@ -18,7 +18,7 @@
 <script setup>
 // 用于接受拖放文件
 import { computed, watch, ref, reactive, toRefs } from "vue";
-import { 读取文件二进制, download } from "../../../api.js";
+import { download } from "../../../api.js";
 
 import InFileButton from "./打开文件按钮.vue";
 import ExDrop from "./高级拖放.vue";
@@ -49,15 +49,17 @@ function 获取文件数据() {
     file = files[0];
   }
   // 处理高级拖放事件 返回数据
-  function outBlob(blob) {
-    console.log("获得拖放控件数据Blob", blob);
-    emits("setBlob", blob);
+  function outBlob(data) {
+    blob = data;
+    console.log("获得拖放控件数据Blob", data);
+    emits("setBlob", data);
   }
 
   // 导出修改后的二进制数据文件
   function outFile() {
     // 从本地储存中获取修改的内容数据
     const localData = JSON.parse(localStorage.getItem("config"));
+    console.log(!localData, !blob);
     if (!localData || !blob) return alert("没找到需要修改的数据or文件没有打开");
 
     const view1 = new DataView(blob);
