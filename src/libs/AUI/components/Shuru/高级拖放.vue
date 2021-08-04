@@ -18,12 +18,27 @@
 
 
 <script setup>
-import { 读取文件二进制, download } from "../../../api.js";
+/**
+ * 此组件用于点击按钮返回打开的文件列表
+ */
 import { ref, computed, reactive, toRefs } from "vue";
 
 const props = defineProps(["msg"]);
 const emits = defineEmits(["inFile", "outBlob"]);
 const openfileEl = ref(null);
+
+function 读取文件二进制(file) {
+  return new Promise((res) => {
+    // 初始化一个文件读取对象
+    var reader = new FileReader();
+    // 读取完成事件
+    reader.onload = function (evt) {
+      res(evt.target.result);
+    };
+    // 开始读取文件
+    reader.readAsArrayBuffer(file);
+  });
+}
 
 const data = reactive({
   msg: "点击我or把文件拖放进来",
