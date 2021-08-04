@@ -113,6 +113,7 @@ function 获取数据(显示模式 = false) {
     default:
       return;
   }
+  // console.log(数值, 数值.toString(16), 11111);
 
   return 显示模式
     ? /(.{2})(.{2})(.{2})(.{2})/g.exec(数值.toString(16).padStart(8, 0))
@@ -121,7 +122,10 @@ function 获取数据(显示模式 = false) {
 
 const rawData = reactive({
   十六进制: computed(() => {
-    return 获取数据(true);
+    let arr = 获取数据(true);
+    // 解决首次运行数据为空报错  计算属性创建后会自动执行一次
+    if (!arr) return;
+    return arr.map((a) => a.toUpperCase());
   }),
   十进制: computed(() => {
     return 获取数据(false);
