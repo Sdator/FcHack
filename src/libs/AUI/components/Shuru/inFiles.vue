@@ -18,13 +18,12 @@
 <script setup>
 // 用于接受拖放文件
 import { computed, watch, ref, reactive, toRefs } from "vue";
-import { download } from "../../../api.js";
 
 import InFileButton from "./打开文件按钮.vue";
 import ExDrop from "./高级拖放.vue";
-
 // 自定义事件 向外传出数据
 const emits = defineEmits(["outBlob", "update"]);
+const { download } = myapi;
 
 function 获取文件数据() {
   let blob = null;
@@ -134,7 +133,7 @@ function json相关() {
   return toRefs(data);
 }
 const { exJsonFile, inJson } = json相关();
-</script>>
+</script>
 
 
 

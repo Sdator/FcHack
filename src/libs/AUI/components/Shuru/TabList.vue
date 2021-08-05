@@ -44,8 +44,9 @@
 <script setup>
 import TabItem from "./TabItem.vue";
 import { reactive, ref, computed, toRefs } from "@vue/reactivity";
-import { 取随机数 } from "../../../api";
-import { 属性 } from "../../../../assets/数据";
+
+const { 属性, 取随机数 } = myapi;
+
 import { watch } from "@vue/runtime-core";
 
 const props = defineProps({ blob: Object, update: Object });
