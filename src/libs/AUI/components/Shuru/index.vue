@@ -1,7 +1,7 @@
 <template>
   <!-- 外层创建一个总框架 方便操控整体样式 -->
   <div class="shuru">
-    <InFiles @outBlob="setBlob" @update="setDB" />
+    <InFiles :blob="blob" @outBlob="setBlob" @update="setDB" />
     <HexEdit :blob="blob" @upBlob="setBlob" />
     <Tab :blob="blob" :update="update" />
   </div>

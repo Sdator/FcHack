@@ -23,10 +23,12 @@ import InFileButton from "./打开文件按钮.vue";
 import ExDrop from "./高级拖放.vue";
 // 自定义事件 向外传出数据
 const emits = defineEmits(["outBlob", "update"]);
+const props = defineProps(["blob"]);
+
 const { download } = myapi;
 
 function 获取文件数据() {
-  let blob = null;
+  let blob = props.blob;
   let file = null;
 
   const data = reactive({
@@ -58,8 +60,9 @@ function 获取文件数据() {
   function outFile() {
     // 从本地储存中获取修改的内容数据
     const localData = JSON.parse(localStorage.getItem("config"));
-    console.log(!localData, !blob);
-    if (!localData || !blob) return alert("没找到需要修改的数据or文件没有打开");
+    console.log(blob, 666666);
+    if (!localData?.db.length || !blob)
+      return alert("没找到需要修改的数据or文件没有打开");
 
     const view1 = new DataView(blob);
 
