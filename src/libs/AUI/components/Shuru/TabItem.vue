@@ -1,8 +1,8 @@
 <template>
-  <tbody>
+  <tbody :class="classTudo">
     <tr>
       <!-- <td>{{序列}}</td> -->
-      <td><input type="text" v-model.trim="属性" /></td>
+      <td><input type="text" v-model="属性" /></td>
       <td><input type="number" v-model.number="长度" /></td>
       <td>
         <input
@@ -24,17 +24,17 @@
         />
       </td> -->
       <td>
-        <label>{{ 十六进制 }}</label>
+        <span>{{ 十六进制 }}</span>
       </td>
       <td>
-        <label>{{ 十进制 }}</label>
+        <span>{{ 十进制 }}</span>
       </td>
 
       <td>
-        <label class="msg" :style="msgClass">{{ msg }}</label>
+        <span class="msg" :style="msgClass">{{ msg }}</span>
       </td>
       <!-- 往父组件抛出事件 并包含当前 数据对象条目 通过条目来过滤 -->
-      <th><button @click="$emit('remote', id)">❌</button></th>
+      <th><button @click="emits('remote', id)">❌</button></th>
       <slot></slot>
     </tr>
   </tbody>
@@ -44,7 +44,7 @@
 <script setup>
 import { computed, reactive, ref, watch, toRefs } from "vue";
 
-// 暴露属性
+const emits = defineEmits(["remote"]);
 const props = defineProps({
   blob: Object, //父组件传递进来的
   endian: Boolean, // 大小端
@@ -53,6 +53,8 @@ const props = defineProps({
 });
 
 const { id, 属性, 长度, 地址, 自定义值, 备注, 序列 } = toRefs(props.data);
+
+const classTudo = ref(null);
 
 // 处理提示信息和其样式
 function msgSystem() {
@@ -139,6 +141,18 @@ const { 十六进制, 十进制 } = toRefs(rawData);
 * {
   margin: 10px;
 }
+
+tbody {
+  // 当读取成功时
+  .tudoRedSucceed {
+    background-color: darkgreen;
+  }
+  // 当读取失败时
+  .tudoRedFail {
+    background-color: darkgray;
+  }
+}
+
 input {
   width: 70px;
   .zhong {
@@ -148,7 +162,7 @@ input {
 .msg {
   width: 200px;
 }
-label {
+span {
   width: 150px;
 }
 </style>

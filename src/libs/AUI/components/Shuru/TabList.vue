@@ -1,18 +1,13 @@
 <template>
-  <div class="样式功能按钮">
-    <button
-      class="mdui-btn mdui-color-theme-accent mdui-ripple"
-      @click="addEntry"
-    >
-      添加条目
-    </button>
-    <!-- <input type="text" v-model="模糊搜索" placeholder="模糊搜索" /> -->
-  </div>
+  <button
+    class="mdui-btn mdui-color-theme-accent mdui-ripple"
+    @click="addEntry"
+  >
+    添加条目
+  </button>
 
   <div class="mdui-textfield mdui-textfield-floating-label">
-    <label class="mdui-textfield-label">
-      {{ 模糊搜索 ? 模糊搜索 : "模糊搜索" }}
-    </label>
+    <label class="mdui-textfield-label">模糊搜索</label>
     <input class="mdui-textfield-input" type="text" v-model="模糊搜索" />
   </div>
 
@@ -23,21 +18,25 @@
   <br />
 
   <div class="mdui-table-fluid">
+    <!-- 表格 -->
     <table class="mdui-table mdui-table-hoverable mdui-container-flui">
+      <!-- 表头 -->
       <thead>
         <tr>
           <th v-for="(name, k) of th" :key="k">{{ name }}</th>
         </tr>
       </thead>
-      <TabItem
-        :blob="blob"
-        v-for="v of fildb"
-        :key="v.id"
-        :data="v"
-        @remote="remoteEntry"
-        :bigModel="bigModel"
-      >
-      </TabItem>
+      <!-- 条目 -->
+      <transition-group appear name="tudo">
+        <TabItem
+          v-for="v of fildb"
+          :key="v.id"
+          :data="v"
+          :blob="blob"
+          :bigModel="bigModel"
+          @remote="remoteEntry"
+        />
+      </transition-group>
     </table>
   </div>
 </template>
@@ -73,7 +72,7 @@ function 数据库() {
         备注: "",
         序列: 0,
       };
-      data.db.push(obj);
+      data.db.unshift(obj);
       console.log("DB:添加数据", obj);
     },
     // 接管 db 用作显示 动态生成的
@@ -155,11 +154,27 @@ const th = [
 </script>
 
 <style lang="scss" scoped>
-.样式功能按钮 {
-  * {
-    width: 400px;
-    height: 100px;
-    margin: 10px;
+button {
+  width: 400px;
+  height: 100px;
+  margin: 10px;
+  display: block; //转为级块元素
+}
+
+.tudo-enter-active {
+  animation: test 0.2s linear;
+}
+
+.tudo-leave-active {
+  animation: test 0.2s linear reverse;
+}
+
+@keyframes test {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0px);
   }
 }
 </style>
