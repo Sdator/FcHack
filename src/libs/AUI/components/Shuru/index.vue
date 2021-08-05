@@ -12,7 +12,7 @@
 // 导入组件内部使用 不全局注册
 // 在setup中可以直接导入插件使用 而不用设置componets
 import Tab from "./TabList.vue";
-import InFiles from "./InFiles.vue";
+import InFiles from "./inFiles.vue";
 import HexEdit from "./十六进制组件.vue";
 import InFileButton from "./打开文件按钮.vue";
 import by from "./作者.vue";
