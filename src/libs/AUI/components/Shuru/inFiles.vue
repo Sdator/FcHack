@@ -138,20 +138,6 @@ const { exJsonFile, inJson } = json相关();
 
 
 <style lang="scss" scoped>
-// .top {
-// display: flex;
-// width: 80vw;
-// height: 500px;
-// justify-content: space-around;
-// }
-.drop {
-  width: 500px;
-  height: 300px;
-  margin: 50px;
-  border: dashed red;
-  // float: left;
-}
-
 button {
   width: 200px;
   height: 60px;
