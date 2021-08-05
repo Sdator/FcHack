@@ -1,6 +1,10 @@
 <template>
   <div>
-    <textarea style="" v-model="blob"></textarea>
+    <textarea
+      style=""
+      v-model="blob"
+      @input="debounce(inHex, 200, blob)"
+    ></textarea>
 
     <span>字符统计:{{ num.toString().padStart(3, "0") }}</span>
   </div>
@@ -9,7 +13,10 @@
 
 <script setup>
 import { computed, reactive, toRefs, warn, watch } from "@vue/runtime-core";
-import { debounce } from "../../../api.js";
+
+const { debounce } = myapi;
+
+console.log(debounce, 77777);
 
 const data = reactive({
   num: computed(() => {
@@ -19,8 +26,28 @@ const data = reactive({
     return data.blob.replace(/ /g, "").length;
   }),
   blob: "",
-  debounce: debounce(500),
 });
+const { num, blob } = toRefs(data);
+
+function inHex(blob) {
+  console.log(blob, 66666666);
+  // const arr = [];
+  // // 匹配正规的字符 并每两个字符合并为一个数组添加到 arr
+  // const blob = v.match(regex)?.forEach((_, k, c) => {
+  //   //条件 双数触发一次
+  //   if (k % 2 == 0) {
+  //     arr.push(
+  //       //添加到数组中
+  //       c
+  //         .slice(k, k + 2) //取两个元素
+  //         .join("") //合并
+  //         .toUpperCase() //转换为大小写
+  //     );
+  //   }
+  // });
+  // // 最后把数组转为字符串并用空格分隔
+  // data.blob = arr.join(" ");
+}
 
 const 延时 = (time) => {
   let t = null;
@@ -44,28 +71,26 @@ watch(
     // if (!regex.test(v[v.length - 1])) data.blob = old;
     // data.blob = data.blob.trim().toUpperCase();
     // 防抖函数
-    data.debounce(() => {
-      const arr = [];
-      // 匹配正规的字符 并每两个字符合并为一个数组添加到 arr
-      const blob = v.match(regex)?.forEach((_, k, c) => {
-        //条件 双数触发一次
-        if (k % 2 == 0) {
-          arr.push(
-            //添加到数组中
-            c
-              .slice(k, k + 2) //取两个元素
-              .join("") //合并
-              .toUpperCase() //转换为大小写
-          );
-        }
-      });
-      // 最后把数组转为字符串并用空格分隔
-      data.blob = arr.join(" ");
-    });
+    //   debounce(() => {
+    //     const arr = [];
+    //     // 匹配正规的字符 并每两个字符合并为一个数组添加到 arr
+    //     const blob = v.match(regex)?.forEach((_, k, c) => {
+    //       //条件 双数触发一次
+    //       if (k % 2 == 0) {
+    //         arr.push(
+    //           //添加到数组中
+    //           c
+    //             .slice(k, k + 2) //取两个元素
+    //             .join("") //合并
+    //             .toUpperCase() //转换为大小写
+    //         );
+    //       }
+    //     });
+    //     // 最后把数组转为字符串并用空格分隔
+    //     data.blob = arr.join(" ");
+    //   });
   }
 );
-
-const { num, blob } = toRefs(data);
 </script>
 
 <style lang="scss" scoped>

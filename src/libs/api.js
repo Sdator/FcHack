@@ -1,9 +1,9 @@
 // import { 属性 } from "../../src/assets/数据.js";
 
 // 防抖
-function debounce(time = 1000) {
+function debounce(fun, time = 1000) {
   let t;
-  return function (fn) {
+  return function () {
     // 获取参数 和 保存当前对象
     const args = arguments;
     const that = this;

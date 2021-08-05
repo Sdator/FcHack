@@ -37,11 +37,12 @@
 import { reactive, toRefs } from "@vue/reactivity";
 import { getCurrentInstance, watch } from "@vue/runtime-core";
 
+import StrInput from "./文本输入框.vue";
+
+// vue3 组合api中获取this的方法
 const instance = getCurrentInstance();
 
 console.log(instance, 111);
-
-import StrInput from "./文本输入框.vue";
 
 const props = defineProps(["blob"]);
 const emits = defineEmits(["upBlob"]);
@@ -80,7 +81,6 @@ watch(插入位置, (v) => {
 
   // console.log(arr,  111);
 
-  // 插入位置.value = arr;
 });
 </script>
 
