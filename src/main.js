@@ -9,9 +9,7 @@ import MDUI from "mdui";
 import myapi from "./libs/api.js";
 window.myapi = myapi;
 
-console.log(myapi, 111111);
-
 // 使用插件 use(AUI)
 const vm = createApp(App).use(AUI).use(MDUI).mount("#app");
 
-console.log(vm, 1111111);
+console.log("VM:", vm);

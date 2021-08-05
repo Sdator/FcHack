@@ -10,7 +10,7 @@ AUI.install = function (Vue) {
   // Vue.component(Shuru.name, Shuru);
   Vue.component(ShuruEx.name, ShuruEx);
 
-  console.log(Vue, 222222);
+  console.log("插件:", Vue);
 };
 
 export default AUI;

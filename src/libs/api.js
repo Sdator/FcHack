@@ -1,7 +1,7 @@
 // import { 属性 } from "../../src/assets/数据.js";
 
 // 防抖
-function debounce(fun, time = 1000) {
+function debounce(fn, time = 1000) {
   let t;
   return function () {
     // 获取参数 和 保存当前对象
@@ -10,8 +10,8 @@ function debounce(fun, time = 1000) {
     // 清除上一次延时器
     clearTimeout(t);
     t = setTimeout(() => {
-      console.log(that, 4444444);
       // 调用时传递
+      console.log("触发防抖", t);
       fn.apply(that, args);
     }, time);
   };
