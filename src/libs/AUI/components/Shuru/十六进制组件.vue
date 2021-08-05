@@ -71,11 +71,16 @@ function changeBlob(blob, 插入位置, model) {
 
   console.log(blob, blob.byteLength, 插入位置, 22222);
 }
+const regex = new RegExp(/[a-fA-F0-9]/g);
 
-watch(插入位置, (a) => {
+watch(插入位置, (v) => {
+  console.log(debounce, 222222);
 
+  插入位置.value = v.match(regex).join("").toUpperCase();
 
+  // console.log(arr,  111);
 
+  // 插入位置.value = arr;
 });
 </script>
 
