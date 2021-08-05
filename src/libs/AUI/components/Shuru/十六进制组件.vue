@@ -23,11 +23,12 @@
         >替换 <input type="radio" name="model" v-model="model" value="ti"
       /></span>
     </div>
+    <!-- 事件触发的同时把数据设置到变量中 -->
     <StrInput @outHex="(v) => (outHex = v)" />
 
     <button
       class="mdui-btn mdui-ripple"
-      @click="changeBlob(blob, 插入位置, model)"
+      @click="changeBlob(blob, outHex, 插入位置, model)"
     >
       确认修改
     </button>
@@ -44,15 +45,13 @@ import StrInput from "./文本输入框.vue";
 const props = defineProps(["blob"]);
 const emits = defineEmits(["upBlob"]);
 
-const { blob } = toRefs(props);
-
 const model = ref("ti"); //模式
-const outHex = ref(null); //待插入的数据 子组件返回
+const outHex = ref(JSON.parse(localStorage.getItem("HexConfig"))?.data); //待插入的数据 子组件返回
 
 function 模块插入位置() {
   const 配置 = JSON.parse(localStorage.getItem("HexConfig"));
   const raw = reactive({
-    插入位置: 配置.addr ?? "",
+    插入位置: 配置?.addr ?? "",
   });
 
   const regex = new RegExp(/[a-fA-F0-9]/g);
@@ -72,7 +71,7 @@ function 模块插入位置() {
         .join("") // 合并数组
         .toUpperCase(); //转为大写
     // 写到本地储存
-    const 配置 = JSON.parse(localStorage.getItem("HexConfig"));
+    const 配置 = JSON.parse(localStorage.getItem("HexConfig")) ?? {};
     配置.addr = addr;
     localStorage.setItem("HexConfig", JSON.stringify(配置));
 
@@ -92,23 +91,52 @@ function 模块插入位置() {
 }
 const { 插入位置 } = 模块插入位置();
 
-function changeBlob(blob, 插入位置, model) {
-  console.log(outHex.value, blob, blob.byteLength, 插入位置, 111111);
+/** 确认修改文件数据
+ * 原始数据
+ * 用作替换或插入数据
+ * 地址偏移
+ * 模式
+ */
+function changeBlob(rawblob, data, 插入位置, model) {
+  if (!rawblob.byteLength || !data.length || 插入位置 == "")
+    return alert("检查是否已经导入了文件，地址是否有填写，文本框是否有内容");
 
-  if (!blob.byteLength) return;
-  const data = new DataView(blob);
+  console.log(rawblob, data, data.length, 插入位置, 22222);
+
+  // 把相关数据转为十进制
+  data = data.map((v) => parseInt(v, 16));
+  插入位置 = parseInt(插入位置, 16);
+
+  const newBlob = new Uint8Array(data);
+  let rawBlobArr = new Uint8Array(rawblob);
 
   switch (model) {
     case "ti":
+      // 替换数据
+      for (const [k, v] of newBlob.entries()) {
+        rawBlobArr[插入位置 + k] = v;
+      }
       break;
     case "cha":
+      // 插入数据
+      // 取前面一段数据
+      const a = new Uint8Array(rawBlobArr.buffer, 0, 插入位置);
+      // 取后面一段数据
+      const c = new Uint8Array(rawBlobArr.buffer, 插入位置);
+      // 合并数据
+      rawBlobArr = new Uint8Array([...a, ...newBlob, ...c]);
+      // rawBlobArr = new Uint8Array([a + newBlob + c]);
+      console.log(rawBlobArr, 777777);
+
       break;
     default:
       break;
   }
+
+  // myapi.download(rawBlobArr,);
+
   // 往父组件返回修改后的文件数据
-  // emits("upBlob", data);
-  console.log(data, data.byteLength, blob, blob.byteLength, 插入位置, 22222);
+  emits("upBlob", rawBlobArr.buffer);
 }
 </script>
 
