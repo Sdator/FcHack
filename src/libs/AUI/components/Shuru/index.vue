@@ -1,10 +1,11 @@
 <template>
   <!-- 外层创建一个总框架 方便操控整体样式 -->
   <div class="shuru">
-    <InFiles @setBlob="setBlob" @update="setDB" />
-    <Tihuan />
+    <InFiles @outBlob="setBlob" @update="setDB" />
+    <HexEdit :blob="blob" @upBlob="setBlob" />
     <Tab :blob="blob" :update="update" />
   </div>
+  <by />
 </template>
 
 <script setup>
@@ -12,9 +13,10 @@
 // 在setup中可以直接导入插件使用 而不用设置componets
 import Tab from "./TabList.vue";
 import InFiles from "./InFiles.vue";
-import Tihuan from "./覆盖组件.vue";
-import { ref } from "@vue/reactivity";
+import HexEdit from "./十六进制组件.vue";
 import InFileButton from "./打开文件按钮.vue";
+import by from "./作者.vue";
+import { ref } from "@vue/reactivity";
 </script>
 
 
@@ -39,7 +41,7 @@ export default {
      * 得到拖放窗返回的二进制数据
      */
     setBlob(blob) {
-      console.log("收到子组件数据", blob);
+      console.log("收到子组件数据设置blob", blob);
       this.blob = blob;
     },
 
@@ -48,7 +50,7 @@ export default {
      * 返回导入的 json 数据
      */
     setDB(db) {
-      console.log("收到子组件数据", db);
+      console.log("收到子组件数据设置db", db);
       this.update = db;
     },
   },

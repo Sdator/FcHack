@@ -24,7 +24,7 @@ import InFileButton from "./打开文件按钮.vue";
 import ExDrop from "./高级拖放.vue";
 
 // 自定义事件 向外传出数据
-const emits = defineEmits(["setBlob", "update"]);
+const emits = defineEmits(["outBlob", "update"]);
 
 function 获取文件数据() {
   let blob = null;
@@ -45,14 +45,14 @@ function 获取文件数据() {
 
   // 处理高级拖放事件 返回文件
   function inFile(files) {
-    console.log("获得拖放控件数据Files", files);
+    console.log("获得拖放控件数据:Files", files);
     file = files[0];
   }
   // 处理高级拖放事件 返回数据
   function outBlob(data) {
     blob = data;
-    console.log("获得拖放控件数据Blob", data);
-    emits("setBlob", data);
+    console.log("获得拖放控件数据继续往外层传送Blob", data);
+    emits("outBlob", data);
   }
 
   // 导出修改后的二进制数据文件

@@ -54,9 +54,9 @@ async function openFile(files) {
     data.classStatus = true;
     data.msg = "得到文件:" + file.name;
     const blob = await 读取文件二进制(file);
+    console.log("高级拖放：二进制读取完毕往父组件发送事件");
     // 向父组件发送事件通知
     emits("outBlob", blob);
-    console.log("二进制读取完毕：往父组件发送事件");
   } catch (error) {
     console.log(error, "读取文件失败");
   }
