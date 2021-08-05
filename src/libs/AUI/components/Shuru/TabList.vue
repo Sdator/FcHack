@@ -1,10 +1,5 @@
 <template>
-  <button
-    class="mdui-btn mdui-color-theme-accent mdui-ripple"
-    @click="addEntry"
-  >
-    添加条目
-  </button>
+  <button class="mdui-btn mdui-ripple" @click="addEntry">添加条目</button>
 
   <div class="mdui-textfield mdui-textfield-floating-label">
     <label class="mdui-textfield-label">模糊搜索</label>
@@ -160,6 +155,7 @@ button {
   height: 100px;
   margin: 10px;
   display: block; //转为级块元素
+  border: 1px solid rgb(169, 98, 22);
 }
 
 .tudo-enter-active {

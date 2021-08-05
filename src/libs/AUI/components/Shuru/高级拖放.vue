@@ -77,7 +77,7 @@ const msgClass = computed(() => {
 .drop {
   width: 500px;
   height: 300px;
-  margin: 50px;
+  margin: 20px;
   border: dashed red;
   /* float: left; */
   font-size: 150%;
