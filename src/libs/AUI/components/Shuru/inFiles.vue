@@ -156,5 +156,7 @@ button {
   width: 200px;
   height: 60px;
   margin: 10px;
+
+  border: 1px solid rgb(169, 98, 22);
 }
 </style>
