@@ -25,7 +25,7 @@ const emits = defineEmits(["outHex"]);
 function 模块十六进制编辑器() {
   const 配置 = JSON.parse(localStorage.getItem("HexConfig"));
   const raw = reactive({
-    blob: 配置.data ?? "",
+    blob: 配置?.data.join(" ") ?? "",
   });
 
   const regex = new RegExp(/[a-fA-F0-9]/g);
@@ -46,17 +46,15 @@ function 模块十六进制编辑器() {
       }
     });
 
-    const data = arr.join(" ");
-
     // 写到本地储存
-    const 配置 = JSON.parse(localStorage.getItem("HexConfig"));
-    配置.data = data;
+    const 配置 = JSON.parse(localStorage.getItem("HexConfig")) ?? {};
+    配置.data = arr;
     localStorage.setItem("HexConfig", JSON.stringify(配置));
 
     // 合并后传出组件外
-    emits("outHex", data);
+    emits("outHex", arr);
     // 最后把数组转为字符串并用空格分隔
-    raw.blob = data;
+    raw.blob = arr.join(" ");
   }, 200);
 
   watch(
