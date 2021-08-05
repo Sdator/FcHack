@@ -1,7 +1,7 @@
-import { 属性 } from "../../src/assets/数据.js";
+// import { 属性 } from "../../src/assets/数据.js";
 
 // 防抖
-export function debounce(time = 1000) {
+function debounce(time = 1000) {
   let t;
   return function (fn) {
     // 获取参数 和 保存当前对象
@@ -62,6 +62,26 @@ function 读取文件二进制(file) {
     // 开始读取文件
     reader.readAsArrayBuffer(file);
   });
+}
+
+class 属性 {
+  static 属性类目 = `
+  力量
+  敏捷
+  智力
+  生命
+  魔法
+  法防
+  物防
+  魔抗
+    `
+    .trim()
+    .split("\n")
+    .map((v) => v.trim());
+
+  static get 取随机属性() {
+    return 属性.属性类目[取随机数(属性.属性类目.length)];
+  }
 }
 
 class FCDate {
@@ -128,10 +148,10 @@ class FCDate {
   }
 }
 
-const db = new FCDate();
+// const db = new FCDate();
 // db.add();
 // db.add({ 长度: 10086 });
 // db.add({ 长度: 55 });
 // console.log(db.list, db.size, 2222);
 
-export { 读取文件二进制, db, FCDate, 取随机数, download };
+export default { 读取文件二进制, 属性, 取随机数, download, debounce };
