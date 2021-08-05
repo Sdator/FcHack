@@ -6,6 +6,7 @@
         type="text"
         placeholder="插入位置 0x????"
         v-model="插入位置"
+        @click="(e) => e.target.select()"
       />
     </div>
 
@@ -22,10 +23,10 @@
         >替换 <input type="radio" name="model" v-model="model" value="ti"
       /></span>
     </div>
-    <StrInput />
+    <StrInput @outHex="(v) => (outHex = v)" />
 
     <button
-      class="mdui-btn mdui-color-theme-accent mdui-ripple"
+      class="mdui-btn mdui-ripple"
       @click="changeBlob(blob, 插入位置, model)"
     >
       确认修改
@@ -34,32 +35,68 @@
 </template>
 
 <script setup>
-import { reactive, toRefs } from "@vue/reactivity";
-import { getCurrentInstance, watch } from "@vue/runtime-core";
+import { reactive, ref, toRefs } from "@vue/reactivity";
+import { nextTick, watch } from "@vue/runtime-core";
 
 import StrInput from "./文本输入框.vue";
 
-// vue3 组合api中获取this的方法
-const instance = getCurrentInstance();
-
-console.log(instance, 111);
-
+// 传入的文件数据
 const props = defineProps(["blob"]);
 const emits = defineEmits(["upBlob"]);
 
-const data = reactive({
-  model: "ti",
-  插入位置: "",
-});
-
-const { model, 插入位置 } = toRefs(data);
 const { blob } = toRefs(props);
 
+const model = ref("ti"); //模式
+const outHex = ref(null); //待插入的数据 子组件返回
+
+function 模块插入位置() {
+  const 配置 = JSON.parse(localStorage.getItem("HexConfig"));
+  const raw = reactive({
+    插入位置: 配置.addr ?? "",
+  });
+
+  const regex = new RegExp(/[a-fA-F0-9]/g);
+  // 预先给要执行的函数绑定防抖
+  const upHexFrom = myapi.debounce((v) => {
+    const len = v.search("^0x");
+    const str = v
+      .slice(len == -1 ? 0 : 2) // 如果存在0x从第2个字符开始
+      .match(regex); // 匹配正规的字符
+
+    console.log(str, 666666666);
+
+    if (!str) return (raw.插入位置 = "");
+    const addr =
+      "0x" +
+      str
+        .join("") // 合并数组
+        .toUpperCase(); //转为大写
+    // 写到本地储存
+    const 配置 = JSON.parse(localStorage.getItem("HexConfig"));
+    配置.addr = addr;
+    localStorage.setItem("HexConfig", JSON.stringify(配置));
+
+    // 处理用户输入 去掉前两个字符 匹配剩下的全部转为大写
+    raw.插入位置 = addr;
+  }, 200);
+
+  watch(
+    () => raw.插入位置,
+    (v) => {
+      // 防抖函数
+      upHexFrom(v);
+    }
+  );
+
+  return toRefs(raw);
+}
+const { 插入位置 } = 模块插入位置();
+
 function changeBlob(blob, 插入位置, model) {
-  console.log(blob, blob.byteLength, 插入位置, 111111);
+  console.log(outHex.value, blob, blob.byteLength, 插入位置, 111111);
 
   if (!blob.byteLength) return;
-  blob = new DataView(blob);
+  const data = new DataView(blob);
 
   switch (model) {
     case "ti":
@@ -69,19 +106,10 @@ function changeBlob(blob, 插入位置, model) {
     default:
       break;
   }
-
-  console.log(blob, blob.byteLength, 插入位置, 22222);
+  // 往父组件返回修改后的文件数据
+  // emits("upBlob", data);
+  console.log(data, data.byteLength, blob, blob.byteLength, 插入位置, 22222);
 }
-const regex = new RegExp(/[a-fA-F0-9]/g);
-
-watch(插入位置, (v) => {
-  console.log(debounce, 222222);
-
-  插入位置.value = v.match(regex).join("").toUpperCase();
-
-  // console.log(arr,  111);
-
-});
 </script>
 
 <style lang="scss" scoped>
@@ -96,5 +124,6 @@ watch(插入位置, (v) => {
 }
 button {
   margin-top: 20px;
+  border: 1px solid rgb(169, 98, 22);
 }
 </style>
