@@ -2,12 +2,15 @@
   <div class="charu">
     <div class="mdui-textfield">
       <input
-        class="mdui-textfield-input"
         type="text"
         placeholder="插入位置 0x????"
+        class="mdui-textfield-input"
+        :class="classInputObj"
         v-model="插入位置"
-        @click="(e) => e.target.select()"
+        ref="addrEl"
+        @click="inputClick"
       />
+      <!-- @click="(e) => e.target.select()" -->
     </div>
 
     <div class="mdui-textfield mdui-textfield-floating-label">
@@ -37,7 +40,7 @@
 
 <script setup>
 import { reactive, ref, toRefs } from "@vue/reactivity";
-import { nextTick, watch } from "@vue/runtime-core";
+import { computed, nextTick, watch } from "@vue/runtime-core";
 
 import StrInput from "./文本输入框.vue";
 
@@ -50,19 +53,39 @@ const outHex = ref(JSON.parse(localStorage.getItem("HexConfig"))?.data); //待�
 
 function 模块插入位置() {
   const 配置 = JSON.parse(localStorage.getItem("HexConfig"));
+  let oldAddr;
+  let clickStatus = false;
+
   const raw = reactive({
     插入位置: 配置?.addr ?? "",
-  });
+    addrEl: null,
+    classInputObj: {
+      fontDel: false,
+    },
+    inputClick(e) {
+      const el = e.target;
+      // 全选
+      el.select();
+      // 点击时记录位置
+      // nextTick(() => {
+      //   oldAddr = el.selectionStart;
+      //   console.log(el, oldAddr, el.selectionEnd);
+      // });
 
+      setTimeout(() => {
+        console.log(el.selectionStart, el.selectionEnd);
+        oldAddr = el.selectionEnd;
+        clickStatus = true;
+      }, 0);
+    },
+  });
   const regex = new RegExp(/[a-fA-F0-9]/g);
   // 预先给要执行的函数绑定防抖
-  const upHexFrom = myapi.debounce((v) => {
+  const upHexFrom = myapi.debounce((v, o) => {
     const len = v.search("^0x");
     const str = v
       .slice(len == -1 ? 0 : 2) // 如果存在0x从第2个字符开始
       .match(regex); // 匹配正规的字符
-
-    console.log(str, 666666666);
 
     if (!str) return (raw.插入位置 = "");
     const addr =
@@ -75,21 +98,39 @@ function 模块插入位置() {
     配置.addr = addr;
     localStorage.setItem("HexConfig", JSON.stringify(配置));
 
+    raw.classInputObj.fontDel = parseInt(addr) > props.blob.byteLength;
+
     // 处理用户输入 去掉前两个字符 匹配剩下的全部转为大写
     raw.插入位置 = addr;
+
+    // console.log(oldAddr, 66666);
+
+    nextTick(() => {
+      // if (clickStatus) {
+      //   raw.addrEl.selectionStart = raw.插入位置.length - o.length + oldAddr;
+      //   raw.addrEl.selectionEnd = raw.插入位置.length - o.length + oldAddr;
+      // }
+      // console.log(raw.插入位置.length, o.length);
+      // clickStatus = false;
+      raw.addrEl.selectionStart = raw.插入位置.length - o.length + oldAddr;
+      raw.addrEl.selectionEnd = raw.插入位置.length - o.length + oldAddr;
+
+      oldAddr = raw.addrEl.selectionEnd;
+    });
   }, 200);
 
   watch(
     () => raw.插入位置,
-    (v) => {
+    (v, o) => {
+      oldAddr = raw.addrEl.selectionEnd;
       // 防抖函数
-      upHexFrom(v);
+      upHexFrom(v, o);
     }
   );
 
   return toRefs(raw);
 }
-const { 插入位置 } = 模块插入位置();
+const { 插入位置, classInputObj, addrEl, inputClick } = 模块插入位置();
 
 /** 确认修改文件数据
  * 原始数据
@@ -153,5 +194,11 @@ function changeBlob(rawblob, data, 插入位置, model) {
 button {
   margin-top: 20px;
   border: 1px solid rgb(169, 98, 22);
+}
+
+.fontDel {
+  color: red;
+  text-decoration: line-through;
+  font-style: italic;
 }
 </style>
