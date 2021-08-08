@@ -112,10 +112,9 @@ function 模块插入位置() {
       // }
       // console.log(raw.插入位置.length, o.length);
       // clickStatus = false;
-      raw.addrEl.selectionStart = raw.插入位置.length - o.length + oldAddr;
-      raw.addrEl.selectionEnd = raw.插入位置.length - o.length + oldAddr;
-
-      oldAddr = raw.addrEl.selectionEnd;
+      // raw.addrEl.selectionStart = raw.插入位置.length - o.length + oldAddr;
+      // raw.addrEl.selectionEnd = raw.插入位置.length - o.length + oldAddr;
+      // oldAddr = raw.addrEl.selectionEnd;
     });
   }, 200);
 
@@ -149,35 +148,63 @@ function changeBlob(rawblob, data, 插入位置, model) {
   插入位置 = parseInt(插入位置, 16);
 
   const newBlob = new Uint8Array(data);
-  let rawBlobArr = new Uint8Array(rawblob);
+  let rawArrBlob = new Uint8Array(rawblob);
+
+  let isChangeModel;
+  let 填充值;
+
+  if (插入位置 + newBlob.byteLength > rawblob.byteLength) {
+    // ! 看需求度再实现
+    isChangeModel = confirm("提示：插入地址长度大于文件长度是否扩大文件长度");
+    if (!isChangeModel) return;
+    填充值 = prompt("使用什么值去填充？如：0，0xFF (单字节)", 0);
+  }
 
   switch (model) {
     case "ti":
-      // 替换数据
-      for (const [k, v] of newBlob.entries()) {
-        rawBlobArr[插入位置 + k] = v;
+      if (isChangeModel == undefined || !isChangeModel) {
+        // 替换数据
+        for (const [k, v] of newBlob.entries()) {
+          rawArrBlob[插入位置 + k] = v;
+        }
+        break;
       }
-      break;
+
     case "cha":
+      let scapes;
+      if (填充值 != undefined) {
+        scapes = new Uint8Array([
+          ...rawArrBlob,
+          ...new Uint8Array(插入位置 - rawArrBlob.length),
+        ]);
+
+        console.log(scapes, 888888888);
+      } else {
+        scapes = rawArrBlob;
+        console.log(scapes, typeof scapes, 99999999);
+      }
+      
+      return;
+
       // 插入数据
       // 取前面一段数据
-      const a = new Uint8Array(rawBlobArr.buffer, 0, 插入位置);
+      const a = new Uint8Array(rawArrBlob.buffer, 0, 插入位置);
       // 取后面一段数据
-      const c = new Uint8Array(rawBlobArr.buffer, 插入位置);
+      const c = new Uint8Array(rawArrBlob.buffer, 插入位置);
       // 合并数据
-      rawBlobArr = new Uint8Array([...a, ...newBlob, ...c]);
-      // rawBlobArr = new Uint8Array([a + newBlob + c]);
-      console.log(rawBlobArr, 777777);
+      rawArrBlob = new Uint8Array([...a, ...newBlob, ...c]);
+      // rawArrBlob = new Uint8Array([a + newBlob + c]);
+      console.log(rawArrBlob, 777777);
 
       break;
     default:
       break;
   }
 
-  // myapi.download(rawBlobArr,);
+  // myapi.download(rawArrBlob,);
 
   // 往父组件返回修改后的文件数据
-  emits("upBlob", rawBlobArr.buffer);
+  emits("upBlob", rawArrBlob.buffer);
 }
 </script>
 
